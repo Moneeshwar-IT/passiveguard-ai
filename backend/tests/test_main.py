@@ -41,3 +41,36 @@ def test_alert_not_found():
     """Verify 404 response for invalid alert ID."""
     response = client.get("/api/alerts/ALT-NONEXISTENT")
     assert response.status_code == 404
+
+
+def test_cors_get_health_production_frontend():
+    """Verify CORS headers on GET /health for production frontend origin."""
+    prod_origin = "https://passiveguard-frontend.onrender.com"
+    response = client.get("/health", headers={"Origin": prod_origin})
+    assert response.status_code == 200
+    assert response.headers.get("access-control-allow-origin") == prod_origin
+    assert response.headers.get("access-control-allow-credentials") == "true"
+
+
+def test_cors_options_preflight_production_frontend():
+    """Verify CORS preflight (OPTIONS) request for production frontend origin."""
+    prod_origin = "https://passiveguard-frontend.onrender.com"
+    response = client.options(
+        "/api/demo/run",
+        headers={
+            "Origin": prod_origin,
+            "Access-Control-Request-Method": "POST",
+            "Access-Control-Request-Headers": "content-type"
+        }
+    )
+    assert response.status_code == 200
+    assert response.headers.get("access-control-allow-origin") == prod_origin
+    assert "POST" in response.headers.get("access-control-allow-methods", "")
+
+
+def test_cors_localhost_dev_support():
+    """Verify CORS headers for local development origin http://localhost:5173."""
+    dev_origin = "http://localhost:5173"
+    response = client.get("/health", headers={"Origin": dev_origin})
+    assert response.status_code == 200
+    assert response.headers.get("access-control-allow-origin") == dev_origin

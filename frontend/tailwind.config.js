@@ -7,16 +7,23 @@ export default {
   darkMode: 'class',
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
+      },
       colors: {
         soc: {
-          bg: '#0f172a',
-          card: '#1e293b',
-          sidebar: '#0b1329',
-          border: '#334155',
-          accent: '#38bdf8',
-          danger: '#ef4444',
-          warning: '#f59e0b',
-          success: '#10b981',
+          bg: '#070B14',
+          surface: '#0B1120',
+          card: '#111827',
+          cardHover: '#172033',
+          border: '#1E293B',
+          cyan: '#06B6D4',
+          blue: '#38BDF8',
+          teal: '#14B8A6',
+          danger: '#EF4444',
+          warning: '#F59E0B',
+          success: '#10B981',
         }
       }
     },

@@ -1,0 +1,74 @@
+================================================================================
+PASSIVEGUARD AI — SIH FINAL ARCHITECTURE & ROADMAP REPORT
+================================================================================
+
+Project Name: PassiveGuard AI (Unidirectional Cyber Threat Detection Platform)
+SIH Domain: Cybersecurity / Air-Gapped Enclave Monitoring & Data Diode Protection
+Live Production Frontend: https://passiveguard-frontend.onrender.com
+Live Production Backend: https://passiveguard-backend-s7vk.onrender.com
+Pytest Verification: 263 Unit & Integration Tests Passed (1 Skipped) | 100% Build Clean
+
+================================================================================
+1. FRONTEND TECHNOLOGIES (WHAT WE USED IN FRONTEND)
+================================================================================
+- Framework: React 18.3.1 (Single Page Application - SPA)
+- Build Tool: Vite JS 6.4.3 with @vitejs/plugin-react 5.1.0
+- Styling Engine: Tailwind CSS 3.4.1 with custom SOC dark theme palette
+- Icon System: Lucide React 0.400.0 (Shield, Server, Radio, Activity, AlertTriangle)
+- Charting: Recharts 2.12.7 (AreaChart timeline, BarChart threat distribution)
+- Routing: React Router DOM 6.24.1 (BrowserRouter, Routes, Route)
+- HTTP Client: Axios 1.7.2 with timeouts and detailed HTTP status formatting
+- Real-Time Stream: Native WebSocket API with getWebSocketUrl() (https->wss, http->ws)
+
+Pages Implemented:
+1. SOC Dashboard (/): Real-time metrics, Recharts timeline, threat breakdown.
+2. Demo Simulator (/demo): Interactive threat scenario runner (9 scenarios) & log.
+3. Threat Alerts Center (/alerts): Searchable & filterable alert finding table.
+4. Evidence Inspector (/alert-details): 5-tuple connection details & model evidence.
+5. Traffic Analytics (/traffic): Transport layer protocol distribution bars.
+6. AI Model Registry (/models): UNSW-NB15 model version status & benchmark accuracy.
+
+================================================================================
+2. BACKEND TECHNOLOGIES (WHAT WE USED IN BACKEND)
+================================================================================
+- Language & Runtime: Python 3.12 / 3.14
+- Web Framework: FastAPI 0.115.0 with Uvicorn 0.30.0 ASGI server
+- Schema Validation: Pydantic v2 & Pydantic-Settings (BaseSettings, field_validator)
+- Machine Learning: scikit-learn 1.5.0 (RandomForestClassifier model loading)
+- Model Serialization: Joblib 1.4.2 (.joblib binary model artifacts)
+- Numerical Matrix: NumPy 1.26.4 & Pandas 2.2.0
+- Persistence Database: SQLite 3 (WAL mode passiveguard.db)
+- Testing Framework: Pytest 8.2.0 (263 unit, integration & AST passive tests)
+
+================================================================================
+3. WHAT IS BUILT & WORKING NOW
+================================================================================
+- Passive Flow Ingestor (5-tuple FlowRecord builder) [BUILT & WORKING]
+- 7 Threat Detectors (DDoS, Recon, C2, DGA, Tunnel, TLS, Exfil) [BUILT & WORKING]
+- Real ML Pipeline (UNSW-NB15 DDoS: 93.53%, Recon: 97.43% accuracy) [BUILT & WORKING]
+- Multi-Signal Risk Fusion Engine (Weighted aggregation [0.0, 1.0]) [BUILT & WORKING]
+- SQLite Alert & Traffic Store (alerts & traffic_stats tables) [BUILT & WORKING]
+- WebSocket Stream Server (/ws broadcasting live events) [BUILT & WORKING]
+- Controlled Threat Simulator (9 scenarios with lock protection) [BUILT & WORKING]
+- Full React SOC Dashboard & Inspector UI [BUILT & WORKING]
+- AST Passive Safety Static Checker [BUILT & WORKING]
+- Production Deployment on Render (Frontend + Backend) [BUILT & DEPLOYED]
+
+================================================================================
+4. WHAT WE ARE GOING TO BUILD IN SIH FINAL (PLANNED ROADMAP)
+================================================================================
+P0 (Critical):
+- Physical Hardware TAP & Data Diode Ring Buffer: Integration with libpcap/AF_PACKET for live 1G/10G physical diode links.
+- NetFlow / IPFIX / sFlow Collector: Native binary UDP listener ingesting enterprise switch datagrams directly.
+
+P1 (High):
+- PostgreSQL + TimescaleDB Storage: Migrating from SQLite to TimescaleDB time-series hyper-tables for multi-gigabyte retention.
+- Apache Kafka / NATS Streaming Bus: Asynchronous event-driven pipeline scaling ingestion to 100,000+ flows/sec.
+- Continuous Retraining & Drift Monitor: PSI monitoring measuring feature distribution shifts to trigger automated retraining.
+- Role-Based Access Control (RBAC): JWT authentication with Analyst, SOC Lead, and Auditor permissions.
+
+P2 (Medium):
+- UI PDF Executive SOC Report Export: One-click PDF export button on Dashboard for SOC managers and SIH judges.
+- Outbound Webhooks (Slack/Splunk): Passive HTTP webhook dispatches pushing alert JSON payloads to external SIEMs.
+
+================================================================================

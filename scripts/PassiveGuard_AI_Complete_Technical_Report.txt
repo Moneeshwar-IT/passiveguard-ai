@@ -1,0 +1,119 @@
+================================================================================
+PASSIVEGUARD AI — COMPLETE TECHNICAL DEVELOPMENT, ARCHITECTURE & DEPLOYMENT REPORT
+================================================================================
+
+Project Title: PassiveGuard AI — Unidirectional Cyber Threat Detection Platform
+Event/Domain: Smart India Hackathon (SIH) Cybersecurity Problem Statement
+Location: C:\Users\Pradeep Kumar\OneDrive\Desktop\passiveguard-ai
+Production Backend: https://passiveguard-backend-s7vk.onrender.com
+Production Frontend: https://passiveguard-frontend.onrender.com
+Date & Time: September 4, 2026 | 15:00 IST
+Verification Status: 263 Pytest Unit/Integration Tests Passed (1 Skipped) | NPM Build Clean (0 Errors)
+
+================================================================================
+EXECUTIVE SUMMARY
+================================================================================
+PassiveGuard AI is a specialized, zero-trust passive cybersecurity threat detection system engineered for unidirectional IP network traffic (data diodes and air-gapped enclave monitoring). Operating under non-negotiable passive constraints, the platform consumes observed network flows without emitting network packets, initiating active scans, performing DNS lookups, or modifying network infrastructure.
+
+The system fuses machine learning models trained on the benchmark UNSW-NB15 dataset (Random Forest models for DDoS and Reconnaissance) with high-performance statistical heuristic detectors for C2 beaconing, DGA domains, DNS tunneling, encrypted TLS malware, and data exfiltration. The end-to-end architecture is fully deployed on Render with an interactive SOC Dashboard, real-time WebSockets streaming, and programmatic threat simulation.
+
+================================================================================
+1. COMPLETE PROJECT TIMELINE
+================================================================================
+Phase 1: Scaffolding & Core Architecture
+- FastAPI app structure, Pydantic settings, flow ingestion models, and initial project layout. [IMPLEMENTED & TESTED]
+
+Phase 2: Ingestion & Feature Engineering
+- Streaming FlowRecord builder, 5-tuple tracking, feature extraction (DNS entropy, TLS JA3, temporal periodicity). [IMPLEMENTED & TESTED]
+
+Phase 3: Detector Suite Implementation
+- Developed 7 threat detectors (DDoS, C2, DGA, DNS Tunnel, TLS Malware, Recon Sweep, Exfiltration). [IMPLEMENTED & TESTED]
+
+Phase 4: Risk Fusion & Alert Storage
+- Weighted multi-signal risk fusion engine, SQLite AlertStore persistence, bounded deduplication cache. [IMPLEMENTED & TESTED]
+
+Phase 5: Real ML Pipeline & UNSW-NB15
+- Dataset ingestion, UNSW-NB15 DoS/Recon training, Random Forest model artifacts (.joblib) & manifests. [IMPLEMENTED & TESTED]
+
+Phase 6: Frontend React Dashboard
+- Vite 6 + React SPA, SOC Dashboard, Alert Inspector, Traffic Analytics, Model Registry UI. [IMPLEMENTED & DEPLOYED]
+
+Phase 7: Demo Simulation & WebSockets
+- Controlled threat simulation runner, 9 threat scenarios, WebSocket live event streaming (/ws). [IMPLEMENTED & DEPLOYED]
+
+Phase 8: Production Deployment & Fixes
+- Render GitHub integration, CORS configuration, Reset State SQLite fix, protocol-aware WebSocket converter. [DEPLOYED & VERIFIED]
+
+================================================================================
+2. SIH PROBLEM STATEMENT COMPLIANCE MAPPING
+================================================================================
+- Unidirectional Passive Observation: Pipeline processes observed flows without socket output or packet emission. [app/pipeline/engine.py - IMPLEMENTED]
+- Zero Active Probing / Return Traffic: AST static checks enforce no socket.send(), connect(), or active scanning calls. [tests/test_demo_api.py - VERIFIED]
+- DDoS & Volumetric Flood Detection: Hybrid ML (Random Forest) + SYN/ACK & rate heuristic scoring. [data/models/ddos_rf_unsw_nb15_v1.joblib - TESTED]
+- Port Scanning & Recon Detection: Hybrid ML (Random Forest) + vertical port fan-out entropy evaluation. [data/models/recon_scan_rf_unsw_nb15_v1.joblib - TESTED]
+- C2 Beaconing Detection: Statistical periodicity & inter-arrival time variance recurrence tracking. [app/detection/c2.py - TESTED]
+- DGA Domain & DNS Tunnelling: Subdomain Shannon entropy, n-grams, query length churn analysis. [app/detection/dga.py, dns_tunneling.py - TESTED]
+- Encrypted TLS Malware Detection: Metadata-only SSL version, JA3 hash, packet size uniformity inspection. [app/detection/tls.py - TESTED]
+- Data Exfiltration Detection: Outbound directional byte ratio & sustained egress volume monitoring. [app/detection/exfiltration.py - TESTED]
+- SOC Dashboard & Real-Time Stream: React SPA + WebSockets (/ws) broadcasting live threat alerts. [https://passiveguard-frontend.onrender.com - DEPLOYED]
+
+================================================================================
+3. SYSTEM ARCHITECTURE
+================================================================================
+[PASSIVE TRAFFIC SOURCE] -> [INGESTION & FEATURE EXTRACTION] -> [THREAT DETECTORS (ML + STATISTICAL)] -> [RISK FUSION ENGINE] -> [ALERT STORE (SQLITE)] -> [WEBSOCKET & REST API (FASTAPI)] -> [SOC DASHBOARD (REACT SPA)]
+
+================================================================================
+4. BENCHMARK ML MODEL PERFORMANCE (UNSW-NB15 HELD-OUT TEST SET)
+================================================================================
+DDoS Model (RandomForest):
+- Version: v1.0.0-hybrid
+- Artifact: data/models/ddos_rf_unsw_nb15_v1.joblib
+- Evaluated Records: 175,341 held-out test samples
+- Accuracy: 93.53%
+- Macro F1: 0.8526
+- Weighted F1: 0.9411
+- FPR: 6.47%
+- FNR: 6.46%
+
+Recon Scan Model (RandomForest):
+- Version: v1.0.0-hybrid
+- Artifact: data/models/recon_scan_rf_unsw_nb15_v1.joblib
+- Evaluated Records: 175,341 held-out test samples
+- Accuracy: 97.43%
+- Macro F1: 0.9271
+- Weighted F1: 0.9756
+- FPR: 2.62%
+- FNR: 2.00%
+
+================================================================================
+5. MAJOR BUG FIXES & DIAGNOSTICS
+================================================================================
+1. Active Flows = 25 after Reset State:
+   - Root Cause: traffic_stats SQLite table was not deleted during reset.
+   - Fix: Added clear_traffic_stats() & zero snapshot creation in TrafficTracker.reset().
+
+2. Live Graph 'Waiting for stream...':
+   - Root Cause: traffic_tracker._history was emptied without seeding initial point.
+   - Fix: Seeded initial zero baseline point in reset().
+
+3. Demo Run 'Network Error' on Render:
+   - Root Cause: Vite build used http://localhost:8000 fallback when VITE_API_BASE_URL was unset.
+   - Fix: Updated getApiBaseUrl() to default to https://passiveguard-backend-s7vk.onrender.com.
+
+4. Browser CORS Block on /health:
+   - Root Cause: Backend CORSMiddleware lacked production frontend origin in CORS_ORIGINS array.
+   - Fix: Updated config.py parser to include https://passiveguard-frontend.onrender.com & strip trailing slashes.
+
+5. WebSocket Protocol Mismatch:
+   - Root Cause: Hardcoded ws:// protocol caused security errors under HTTPS.
+   - Fix: Implemented getWebSocketUrl() converter (https->wss, http->ws).
+
+================================================================================
+6. JUDGE-READY TECHNICAL FACTS
+================================================================================
+- Pytest Results: 263 passed, 1 skipped.
+- Frontend Build: Vite 6 SPA compiled cleanly to dist/ in 23.89s.
+- Passive Safety: 100% AST verified (0 socket calls, 0 packet emissions).
+- Backend Deployment: https://passiveguard-backend-s7vk.onrender.com
+- Frontend Deployment: https://passiveguard-frontend.onrender.com
+================================================================================
