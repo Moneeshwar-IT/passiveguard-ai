@@ -1,0 +1,28 @@
+{
+  "model_version": "v1.0.0-hybrid",
+  "detector": "ddos_detector",
+  "algorithm": "RandomForestClassifier",
+  "feature_names": [
+    "flow_packets_per_sec",
+    "flow_bytes_per_sec",
+    "tcp_syn_count",
+    "tcp_syn_ack_count",
+    "tcp_ack_count",
+    "directional_byte_ratio",
+    "temporal_mean_iat",
+    "temporal_std_iat",
+    "source_entropy"
+  ],
+  "training_dataset": "synthetic_benchmark_dataset",
+  "training_timestamp": "2026-09-02T15:07:29.943105+00:00",
+  "class_labels": {
+    "0": "BENIGN",
+    "1": "DDOS"
+  },
+  "test_metrics": {
+    "accuracy": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1_score": 1.0
+  }
+}

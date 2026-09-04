@@ -1,0 +1,47 @@
+# Python Bytecode & Cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+*.joblib
+
+# Virtual Environments
+venv/
+env/
+ENV/
+
+# Node & Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.env.local
+
+# Data Directory Ignores (Preserve .gitkeep & README.md)
+data/raw/*
+!data/raw/.gitkeep
+!data/raw/README.md
+
+data/processed/*
+!data/processed/.gitkeep
+!data/processed/README.md
+
+data/models/*
+!data/models/.gitkeep
+!data/models/README.md
+!backend/models/ddos_model_v1.joblib
+
+data/manifests/*
+!data/manifests/.gitkeep
+!data/manifests/README.md
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+
+data/*.db
+data/*.sqlite
+data/*.sqlite3
