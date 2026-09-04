@@ -1,13 +1,37 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+const DEFAULT_BACKEND_URL = 'https://passiveguard-backend-s7vk.onrender.com';
+
+export const getApiBaseUrl = () => {
+  const envUrl = import.meta.env.VITE_API_BASE_URL;
+  if (envUrl && typeof envUrl === 'string' && envUrl.trim() !== '') {
+    return envUrl.trim().replace(/\/$/, '');
+  }
+  return DEFAULT_BACKEND_URL;
+};
+
+export const API_BASE_URL = getApiBaseUrl();
+
+export const getWebSocketUrl = (baseUrl = API_BASE_URL) => {
+  const cleanUrl = baseUrl.replace(/\/$/, '');
+  if (cleanUrl.startsWith('https://')) {
+    return cleanUrl.replace(/^https:\/\//, 'wss://') + '/ws';
+  }
+  if (cleanUrl.startsWith('http://')) {
+    return cleanUrl.replace(/^http:\/\//, 'ws://') + '/ws';
+  }
+  if (cleanUrl.startsWith('wss://') || cleanUrl.startsWith('ws://')) {
+    return cleanUrl.endsWith('/ws') ? cleanUrl : `${cleanUrl}/ws`;
+  }
+  return `wss://${cleanUrl}/ws`;
+};
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 5000,
+  timeout: 30000,
 });
 
 export const fetchHealth = async () => {
@@ -92,12 +116,12 @@ export const runDemoScenario = async (scenario = 'mixed', resetState = false, de
     scenario,
     reset_state: resetState,
     delay
-  }, { timeout: 30000 });
+  }, { timeout: 60000 });
   return response.data;
 };
 
 export const resetDemoState = async () => {
-  const response = await apiClient.post('/api/demo/reset');
+  const response = await apiClient.post('/api/demo/reset', {}, { timeout: 30000 });
   return response.data;
 };
 
@@ -119,37 +143,43 @@ export const formatThroughput = (bytesPerSec) => {
 };
 
 export const createWebSocketConnection = (onMessage, onStatusChange) => {
-  const wsUrl = API_BASE_URL.replace(/^http/, 'ws') + '/ws';
+  const wsUrl = getWebSocketUrl(API_BASE_URL);
   let ws = null;
   let isClosed = false;
 
   const connect = () => {
     if (isClosed) return;
-    ws = new WebSocket(wsUrl);
+    try {
+      ws = new WebSocket(wsUrl);
 
-    ws.onopen = () => {
-      if (onStatusChange) onStatusChange('connected');
-    };
+      ws.onopen = () => {
+        if (onStatusChange) onStatusChange('connected');
+      };
 
-    ws.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        onMessage(data);
-      } catch (e) {
-        console.error('Error parsing WebSocket message:', e);
-      }
-    };
+      ws.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          onMessage(data);
+        } catch (e) {
+          console.error('Error parsing WebSocket message:', e);
+        }
+      };
 
-    ws.onerror = () => {
+      ws.onerror = (err) => {
+        console.warn('WebSocket connection error:', wsUrl, err);
+        if (onStatusChange) onStatusChange('error');
+      };
+
+      ws.onclose = () => {
+        if (onStatusChange) onStatusChange('reconnecting');
+        if (!isClosed) {
+          setTimeout(connect, 3000);
+        }
+      };
+    } catch (e) {
+      console.error('WebSocket initialization error:', e);
       if (onStatusChange) onStatusChange('error');
-    };
-
-    ws.onclose = () => {
-      if (onStatusChange) onStatusChange('reconnecting');
-      if (!isClosed) {
-        setTimeout(connect, 3000);
-      }
-    };
+    }
   };
 
   connect();

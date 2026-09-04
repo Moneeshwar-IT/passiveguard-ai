@@ -5,7 +5,22 @@ import {
   Lock, UploadCloud, Layers, PlayCircle, CheckCircle2, AlertTriangle,
   Info, Cpu, Server, Activity, ArrowRight, ShieldCheck, Database, RefreshCw
 } from 'lucide-react';
-import { runDemoScenario, resetDemoState, fetchDemoStatus, fetchDemoScenarios, createWebSocketConnection } from '../services/api';
+import { runDemoScenario, resetDemoState, fetchDemoStatus, fetchDemoScenarios, createWebSocketConnection, API_BASE_URL } from '../services/api';
+
+const formatApiError = (err, fallbackText) => {
+  if (err.response) {
+    const status = err.response.status;
+    const detail = err.response.data?.detail || err.response.data?.message;
+    return detail ? `[HTTP ${status}] ${detail}` : `[HTTP ${status}] ${fallbackText}`;
+  }
+  if (err.code === 'ECONNABORTED' || err.message?.includes('timeout')) {
+    return 'Request timed out waiting for backend response. If backend was sleeping (Render cold-start), please wait a few seconds and retry.';
+  }
+  if (err.message) {
+    return `Network Error: ${err.message}. Target API: ${API_BASE_URL}`;
+  }
+  return fallbackText;
+};
 
 export default function DemoSimulation() {
   const navigate = useNavigate();
@@ -61,7 +76,7 @@ export default function DemoSimulation() {
       setActiveTab('results');
     } catch (err) {
       console.error('Error running demo scenario:', err);
-      setErrorMsg(err.response?.data?.detail || err.message || 'Failed to execute demo simulation.');
+      setErrorMsg(formatApiError(err, 'Failed to execute demo simulation.'));
     } finally {
       setIsRunning(false);
     }
@@ -84,7 +99,7 @@ export default function DemoSimulation() {
       await fetchDemoStatus();
     } catch (err) {
       console.error('Error resetting demo state:', err);
-      setErrorMsg(err.response?.data?.detail || err.message || 'Failed to reset demonstration state.');
+      setErrorMsg(formatApiError(err, 'Failed to reset demonstration state.'));
     } finally {
       setResetting(false);
     }
