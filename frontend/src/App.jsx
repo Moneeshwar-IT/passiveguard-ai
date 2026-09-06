@@ -24,11 +24,11 @@ export default function App() {
 
   return (
     <Router>
-      <div className="min-h-screen flex flex-col bg-[#070B14] text-slate-100 font-sans selection:bg-cyan-500/30 selection:text-cyan-200">
+      <div className="min-h-screen flex flex-col bg-[#F4F7FB] text-[#0F172A] font-sans selection:bg-[#2563EB]/15 selection:text-[#2563EB]">
         <Header wsStatus={wsStatus} />
         <div className="flex flex-1 overflow-hidden">
           <Sidebar wsStatus={wsStatus} />
-          <main className="flex-1 p-6 lg:p-8 bg-[#070B14] overflow-y-auto min-w-0">
+          <main className="flex-1 p-6 lg:p-8 bg-[#F4F7FB] overflow-y-auto min-w-0">
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/demo" element={<DemoSimulation />} />

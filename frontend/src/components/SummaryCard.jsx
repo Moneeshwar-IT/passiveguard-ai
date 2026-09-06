@@ -1,33 +1,58 @@
 import React from 'react';
 
-export default function SummaryCard({ title, value, subtitle, icon: Icon, color = 'cyan', trend }) {
+export default function SummaryCard({ title, value, subtitle, icon: Icon, color = 'blue', trend }) {
   const colorMap = {
-    cyan: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20',
-    blue: 'text-sky-400 bg-sky-500/10 border-sky-500/20',
-    teal: 'text-teal-400 bg-teal-500/10 border-teal-500/20',
-    red: 'text-rose-400 bg-rose-500/10 border-rose-500/20',
-    amber: 'text-amber-400 bg-amber-500/10 border-amber-500/20',
-    emerald: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
-    purple: 'text-purple-400 bg-purple-500/10 border-purple-500/20',
+    blue: {
+      badge: 'text-[#2563EB] bg-[#EFF6FF] border-[#BFDBFE]',
+      text: 'text-[#2563EB]',
+      borderTop: 'border-t-4 border-t-[#2563EB]',
+    },
+    indigo: {
+      badge: 'text-[#4F46E5] bg-[#EEF2FF] border-[#C7D2FE]',
+      text: 'text-[#4F46E5]',
+      borderTop: 'border-t-4 border-t-[#4F46E5]',
+    },
+    purple: {
+      badge: 'text-[#7C3AED] bg-[#F5F3FF] border-[#DDD6FE]',
+      text: 'text-[#7C3AED]',
+      borderTop: 'border-t-4 border-t-[#7C3AED]',
+    },
+    red: {
+      badge: 'text-[#DC2626] bg-[#FEF2F2] border-[#FECACA]',
+      text: 'text-[#DC2626]',
+      borderTop: 'border-t-4 border-t-[#DC2626]',
+    },
+    amber: {
+      badge: 'text-[#D97706] bg-[#FFFBEB] border-[#FDE68A]',
+      text: 'text-[#D97706]',
+      borderTop: 'border-t-4 border-t-[#D97706]',
+    },
+    green: {
+      badge: 'text-[#16A34A] bg-[#ECFDF5] border-[#BBF7D0]',
+      text: 'text-[#16A34A]',
+      borderTop: 'border-t-4 border-t-[#16A34A]',
+    },
   };
 
-  const badgeStyle = colorMap[color] || colorMap.cyan;
+  const styleObj = colorMap[color] || colorMap.blue;
 
   return (
-    <div className="bg-[#111827] border border-[#1E293B] hover:border-[#334155] rounded-xl p-4 transition-all shadow-md group">
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-xs font-mono font-medium text-slate-400 uppercase tracking-wider">{title}</span>
-        {Icon && (
-          <div className={`p-2 rounded-lg border ${badgeStyle} group-hover:scale-105 transition-transform`}>
-            <Icon className="h-4 w-4" />
-          </div>
-        )}
+    <div className={`bg-[#FFFFFF] border border-[#E2E8F0] ${styleObj.borderTop} rounded-xl p-4 transition-all shadow-xs hover:shadow-sm group flex flex-col justify-between`}>
+      <div>
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-[11px] font-mono font-semibold text-[#64748B] uppercase tracking-wider">{title}</span>
+          {Icon && (
+            <div className={`p-2 rounded-lg border ${styleObj.badge} group-hover:scale-105 transition-transform shadow-xs`}>
+              <Icon className="h-4 w-4" />
+            </div>
+          )}
+        </div>
+        <div className="text-2xl font-bold font-mono text-[#0F172A] tracking-tight">{value}</div>
       </div>
-      <div className="text-2xl font-bold font-mono text-white tracking-tight">{value}</div>
       {subtitle && (
-        <div className="text-[11px] text-slate-400 mt-1 flex items-center justify-between">
+        <div className="text-[11px] font-mono text-[#64748B] mt-2 pt-2 border-t border-[#F1F5F9] flex items-center justify-between">
           <span>{subtitle}</span>
-          {trend && <span className="font-mono text-cyan-400 font-semibold">{trend}</span>}
+          {trend && <span className={`font-mono font-bold ${styleObj.text}`}>{trend}</span>}
         </div>
       )}
     </div>

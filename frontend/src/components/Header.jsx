@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Shield, Eye, Activity, AlertCircle, Clock, RefreshCw, CheckCircle2 } from 'lucide-react';
+import { Eye, Activity, AlertCircle, Clock, RefreshCw } from 'lucide-react';
 import { fetchHealth, resetDemoState } from '../services/api';
 
 export default function Header({ wsStatus = 'connected', onResetSuccess }) {
@@ -10,7 +10,6 @@ export default function Header({ wsStatus = 'connected', onResetSuccess }) {
   const [resetting, setResetting] = useState(false);
   const [resetMsg, setResetMsg] = useState(null);
 
-  // Map path to title and breadcrumb
   const pageMap = {
     '/': { title: 'Command Center', breadcrumb: 'PassiveGuard / Command Center' },
     '/demo': { title: 'Demo Lab & Simulation', breadcrumb: 'PassiveGuard / Demo Lab' },
@@ -22,11 +21,10 @@ export default function Header({ wsStatus = 'connected', onResetSuccess }) {
 
   const currentPage = pageMap[location.pathname] || {
     title: 'Command Center',
-    breadcrumb: 'PassiveGuard / Security Enclave',
+    breadcrumb: 'PassiveGuard / Security Console',
   };
 
   useEffect(() => {
-    // Clock
     const updateTime = () => {
       const now = new Date();
       setTimeString(now.toISOString().replace('T', ' ').substring(0, 19) + ' UTC');
@@ -34,7 +32,6 @@ export default function Header({ wsStatus = 'connected', onResetSuccess }) {
     updateTime();
     const timer = setInterval(updateTime, 1000);
 
-    // Health check
     const checkHealth = () => {
       fetchHealth()
         .then((data) => {
@@ -64,7 +61,7 @@ export default function Header({ wsStatus = 'connected', onResetSuccess }) {
     setResetMsg(null);
     try {
       await resetDemoState();
-      setResetMsg('State Reset Complete');
+      setResetMsg('Reset Complete');
       if (onResetSuccess) onResetSuccess();
       setTimeout(() => setResetMsg(null), 3000);
     } catch (err) {
@@ -75,43 +72,43 @@ export default function Header({ wsStatus = 'connected', onResetSuccess }) {
   };
 
   return (
-    <header className="bg-[#0B1120] border-b border-[#1E293B] px-6 py-3.5 flex items-center justify-between shadow-lg sticky top-0 z-30">
+    <header className="bg-[#FFFFFF] border-b border-[#E2E8F0] px-6 py-3 flex items-center justify-between shadow-xs sticky top-0 z-30 select-none">
       {/* Left: Page Title & Breadcrumb */}
       <div className="flex items-center space-x-4">
         <div>
-          <div className="flex items-center space-x-2 text-[11px] font-mono text-slate-500 uppercase tracking-wider">
+          <div className="flex items-center space-x-2 text-[11px] font-mono text-[#64748B] uppercase tracking-wider">
             <span>{currentPage.breadcrumb}</span>
           </div>
-          <h1 className="text-lg font-bold text-white tracking-tight flex items-center gap-2">
+          <h1 className="text-base font-bold text-[#0F172A] tracking-tight flex items-center gap-2 font-sans mt-0.5">
             {currentPage.title}
           </h1>
         </div>
       </div>
 
       {/* Center/Right: Live Status Badges & UTC Clock */}
-      <div className="flex items-center space-x-3">
+      <div className="flex items-center space-x-2.5">
         {/* UTC Clock */}
-        <div className="hidden lg:flex items-center space-x-1.5 px-3 py-1 rounded bg-[#070B14] border border-[#1E293B] text-xs font-mono text-slate-400">
-          <Clock className="h-3.5 w-3.5 text-cyan-400" />
+        <div className="hidden lg:flex items-center space-x-1.5 px-3 py-1 rounded-md bg-[#F8FAFC] border border-[#E2E8F0] text-xs font-mono text-[#475569]">
+          <Clock className="h-3.5 w-3.5 text-[#2563EB]" />
           <span>{timeString}</span>
         </div>
 
         {/* Read Only Enclave Badge */}
-        <div className="hidden md:flex items-center space-x-1.5 bg-[#070B14] px-3 py-1 rounded border border-cyan-500/30 text-xs font-mono text-cyan-400">
-          <Eye className="h-3.5 w-3.5 text-cyan-400 animate-pulse" />
+        <div className="hidden md:flex items-center space-x-1.5 bg-[#EFF6FF] px-3 py-1 rounded-md border border-[#BFDBFE] text-xs font-mono text-[#2563EB] font-semibold">
+          <Eye className="h-3.5 w-3.5 text-[#2563EB]" />
           <span>PASSIVE ENCLAVE: READ-ONLY</span>
         </div>
 
         {/* WebSocket Stream Badge */}
-        <div className={`flex items-center space-x-1.5 px-3 py-1 rounded border text-xs font-mono font-semibold ${
+        <div className={`flex items-center space-x-1.5 px-3 py-1 rounded-md border text-xs font-mono font-semibold ${
           wsStatus === 'connected'
-            ? 'bg-emerald-950/50 border-emerald-500/30 text-emerald-400'
+            ? 'bg-[#ECFDF5] border-[#BBF7D0] text-[#15803D]'
             : wsStatus === 'reconnecting'
-            ? 'bg-amber-950/50 border-amber-500/30 text-amber-400'
-            : 'bg-red-950/50 border-red-500/30 text-red-400'
+            ? 'bg-[#FEF3C7] border-[#FDE68A] text-[#D97706]'
+            : 'bg-[#FEF2F2] border-[#FCA5A5] text-[#DC2626]'
         }`}>
           <span className={`h-2 w-2 rounded-full ${
-            wsStatus === 'connected' ? 'bg-emerald-400 animate-ping' : 'bg-amber-400'
+            wsStatus === 'connected' ? 'bg-[#16A34A] animate-pulse' : 'bg-[#D97706]'
           }`}></span>
           <span>
             {wsStatus === 'connected' ? 'LIVE TELEMETRY' : wsStatus === 'reconnecting' ? 'RECONNECTING' : 'OFFLINE'}
@@ -120,22 +117,22 @@ export default function Header({ wsStatus = 'connected', onResetSuccess }) {
 
         {/* Backend Health Badge */}
         {healthStatus === 'healthy' && (
-          <div className="hidden sm:flex items-center space-x-1.5 bg-emerald-950/40 px-3 py-1 rounded border border-emerald-500/30 text-xs font-mono text-emerald-400">
-            <Activity className="h-3.5 w-3.5 text-emerald-400" />
+          <div className="hidden sm:flex items-center space-x-1.5 bg-[#ECFDF5] px-3 py-1 rounded-md border border-[#BBF7D0] text-xs font-mono text-[#15803D] font-medium">
+            <Activity className="h-3.5 w-3.5 text-[#15803D]" />
             <span>SYSTEM HEALTHY</span>
           </div>
         )}
 
         {healthStatus === 'degraded' && (
-          <div className="flex items-center space-x-1.5 bg-amber-950/40 px-3 py-1 rounded border border-amber-500/30 text-xs font-mono text-amber-400">
-            <AlertCircle className="h-3.5 w-3.5 text-amber-400" />
+          <div className="flex items-center space-x-1.5 bg-[#FEF3C7] px-3 py-1 rounded-md border border-[#FDE68A] text-xs font-mono text-[#D97706] font-medium">
+            <AlertCircle className="h-3.5 w-3.5 text-[#D97706]" />
             <span>DEGRADED</span>
           </div>
         )}
 
         {healthStatus === 'offline' && (
-          <div className="flex items-center space-x-1.5 bg-red-950/40 px-3 py-1 rounded border border-red-500/30 text-xs font-mono text-red-400">
-            <AlertCircle className="h-3.5 w-3.5 text-red-400" />
+          <div className="flex items-center space-x-1.5 bg-[#FEF2F2] px-3 py-1 rounded-md border border-[#FCA5A5] text-xs font-mono text-[#DC2626] font-medium">
+            <AlertCircle className="h-3.5 w-3.5 text-[#DC2626]" />
             <span>OFFLINE</span>
           </div>
         )}
@@ -144,10 +141,10 @@ export default function Header({ wsStatus = 'connected', onResetSuccess }) {
         <button
           onClick={handleGlobalReset}
           disabled={resetting}
-          className="flex items-center space-x-1.5 bg-[#172033] hover:bg-[#1E293B] text-slate-300 border border-[#334155] px-3 py-1 rounded text-xs font-mono font-medium transition-colors disabled:opacity-50"
+          className="bg-[#FFFFFF] hover:bg-[#F8FAFC] text-[#334155] hover:text-[#0F172A] border border-[#CBD5E1] hover:border-[#94A3B8] px-3 py-1 rounded-md text-xs font-mono font-semibold flex items-center space-x-1.5 cursor-pointer disabled:opacity-50 transition-all shadow-xs"
           title="Reset backend alert store and telemetry state"
         >
-          <RefreshCw className={`h-3.5 w-3.5 ${resetting ? 'animate-spin text-cyan-400' : 'text-slate-400'}`} />
+          <RefreshCw className={`h-3.5 w-3.5 ${resetting ? 'animate-spin text-[#2563EB]' : 'text-[#64748B]'}`} />
           <span>{resetting ? 'RESETTING...' : resetMsg ? resetMsg : 'RESET STATE'}</span>
         </button>
       </div>

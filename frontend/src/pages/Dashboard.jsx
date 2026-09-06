@@ -5,7 +5,7 @@ import DetectionPipeline from '../components/dashboard/DetectionPipeline';
 import PassiveEnclaveCard from '../components/dashboard/PassiveEnclaveCard';
 import {
   Activity, AlertTriangle, ShieldAlert, Radio, Server,
-  PieChart, BarChart3, ChevronRight, Bell, Zap, Eye, CheckCircle2
+  PieChart, BarChart3, ChevronRight, Bell, Zap, CheckCircle2
 } from 'lucide-react';
 import {
   fetchAlerts, fetchCurrentTraffic, fetchHistoricalTraffic,
@@ -22,12 +22,10 @@ export default function Dashboard() {
   const [toastAlert, setToastAlert] = useState(null);
 
   useEffect(() => {
-    // Initial REST API Snapshot
     fetchAlerts(null, 100).then(setAlerts).catch(console.error);
     fetchCurrentTraffic().then(setTraffic).catch(console.error);
     fetchHistoricalTraffic().then(setHistory).catch(console.error);
 
-    // Live WebSocket Stream
     const ws = createWebSocketConnection(
       (msg) => {
         if (msg.type === 'alert_created' || msg.event === 'alert_created') {
@@ -38,7 +36,6 @@ export default function Dashboard() {
               return [msg.data, ...prev];
             });
 
-            // Trigger toast notification for CRITICAL / HIGH findings
             if (msg.data.severity === 'CRITICAL' || msg.data.severity === 'HIGH') {
               setToastAlert(msg.data);
               setTimeout(() => setToastAlert(null), 6000);
@@ -79,42 +76,40 @@ export default function Dashboard() {
   const mediumCount = alerts.filter(a => a.severity === 'MEDIUM').length;
   const lowCount = alerts.filter(a => a.severity === 'LOW' || a.severity === 'INFO').length;
 
-  // Calculate actual average detection confidence from real alerts data
   const avgConfidence = alerts.length > 0
     ? (alerts.reduce((acc, curr) => acc + (curr.confidence || 0.85), 0) / alerts.length) * 100
-    : 98.4; // ML model benchmark fallback when 0 alerts recorded
+    : 98.4;
 
-  // Threat Class Distribution Count
+  // Threat Class Distribution Mapping (Light Controlled Color System)
   const threatCounts = {
-    'DDoS': alerts.filter(a => a.threat_class?.includes('DDOS')).length,
-    'C2 Beaconing': alerts.filter(a => a.threat_class?.includes('C2')).length,
-    'DGA Domain': alerts.filter(a => a.threat_class?.includes('DGA')).length,
-    'DNS Tunneling': alerts.filter(a => a.threat_class?.includes('TUNNEL')).length,
-    'Encrypted Malware': alerts.filter(a => a.threat_class?.includes('MALWARE') || a.threat_class?.includes('TLS')).length,
-    'Recon Scan': alerts.filter(a => a.threat_class?.includes('RECON') || a.threat_class?.includes('SCAN')).length,
-    'Exfiltration': alerts.filter(a => a.threat_class?.includes('EXFIL')).length,
+    'DDoS': { count: alerts.filter(a => a.threat_class?.includes('DDOS')).length, color: '#DC2626' },
+    'C2 Beaconing': { count: alerts.filter(a => a.threat_class?.includes('C2')).length, color: '#7C3AED' },
+    'DGA Domain': { count: alerts.filter(a => a.threat_class?.includes('DGA')).length, color: '#4F46E5' },
+    'DNS Tunneling': { count: alerts.filter(a => a.threat_class?.includes('TUNNEL')).length, color: '#0284C7' },
+    'Encrypted Malware': { count: alerts.filter(a => a.threat_class?.includes('MALWARE') || a.threat_class?.includes('TLS')).length, color: '#D97706' },
+    'Recon Scan': { count: alerts.filter(a => a.threat_class?.includes('RECON') || a.threat_class?.includes('SCAN')).length, color: '#2563EB' },
+    'Exfiltration': { count: alerts.filter(a => a.threat_class?.includes('EXFIL')).length, color: '#DB2777' },
   };
 
-  const threatChartData = Object.entries(threatCounts).map(([name, count]) => ({ name, count }));
-  const COLORS = ['#ef4444', '#f97316', '#eab308', '#06b6d4', '#8b5cf6', '#ec4899', '#3b82f6'];
+  const threatChartData = Object.entries(threatCounts).map(([name, obj]) => ({ name, count: obj.count, fill: obj.color }));
 
   return (
     <div className="space-y-6 pb-8">
       {/* Toast Notification */}
       {toastAlert && (
-        <div className="bg-red-950/90 border border-red-500/50 p-4 rounded-xl flex items-center justify-between shadow-2xl animate-pulse">
+        <div className="bg-[#FEF2F2] border border-[#FCA5A5] p-4 rounded-xl flex items-center justify-between shadow-md animate-pulse">
           <div className="flex items-center gap-3">
-            <Bell className="h-5 w-5 text-red-400 shrink-0" />
+            <Bell className="h-5 w-5 text-[#DC2626] shrink-0" />
             <div>
-              <p className="text-xs font-mono text-red-400 font-bold uppercase tracking-wider">NEW HIGH RISK THREAT DETECTED</p>
-              <p className="text-sm font-semibold text-white font-mono">
+              <p className="text-xs font-mono text-[#DC2626] font-bold uppercase tracking-wider">NEW THREAT INCIDENT DETECTED</p>
+              <p className="text-sm font-semibold text-[#991B1B] font-mono">
                 [{toastAlert.severity}] {toastAlert.threat_class} — {toastAlert.source_ip} → {toastAlert.destination_ip}
               </p>
             </div>
           </div>
           <button
             onClick={() => navigate(`/alert-details?id=${toastAlert.alert_id}`)}
-            className="bg-red-600 hover:bg-red-500 text-white text-xs font-mono font-bold px-3 py-1.5 rounded-lg transition-colors shrink-0"
+            className="bg-white hover:bg-slate-50 text-[#DC2626] text-xs font-mono font-bold px-3 py-1.5 rounded-lg border border-[#FCA5A5] transition-colors shrink-0 cursor-pointer shadow-sm"
           >
             Inspect Evidence →
           </button>
@@ -122,31 +117,31 @@ export default function Dashboard() {
       )}
 
       {/* Hero Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#1E293B] pb-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#E2E8F0] pb-4">
         <div>
           <div className="flex items-center space-x-2">
-            <h2 className="text-xl font-bold font-mono text-white tracking-tight uppercase">COMMAND CENTER</h2>
-            <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-cyan-950 border border-cyan-500/30 text-cyan-400">
+            <h2 className="text-xl font-bold font-mono text-[#0F172A] tracking-tight uppercase">COMMAND CENTER</h2>
+            <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-[#EFF6FF] border border-[#BFDBFE] text-[#2563EB]">
               UNIDIRECTIONAL ENCLAVE
             </span>
           </div>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-xs text-[#475569] mt-0.5 font-medium">
             Real-time passive network threat intelligence & zero-packet-transmission observation.
           </p>
         </div>
 
         <div className="flex items-center space-x-2">
           <span className="relative flex h-2.5 w-2.5">
-            <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${wsStatus === 'connected' ? 'bg-emerald-400 opacity-75' : 'bg-amber-400 opacity-75'}`}></span>
-            <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${wsStatus === 'connected' ? 'bg-emerald-500' : 'bg-amber-500'}`}></span>
+            <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${wsStatus === 'connected' ? 'bg-[#16A34A] opacity-75' : 'bg-[#D97706] opacity-75'}`}></span>
+            <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${wsStatus === 'connected' ? 'bg-[#16A34A]' : 'bg-[#D97706]'}`}></span>
           </span>
-          <span className="text-xs font-mono font-bold text-slate-400 uppercase">
+          <span className="text-xs font-mono font-bold text-[#64748B] uppercase">
             LIVE TELEMETRY {wsStatus === 'connected' ? '● STREAMING' : wsStatus === 'reconnecting' ? '● RECONNECTING' : '● OFFLINE'}
           </span>
         </div>
       </div>
 
-      {/* KPI Row (5 Compact Security Cards) */}
+      {/* KPI Row (5 Distinct Security Cards) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         <SummaryCard
           title="Active Flows"
@@ -160,14 +155,14 @@ export default function Dashboard() {
           value={traffic ? (traffic.bandwidth_mbps ? `${traffic.bandwidth_mbps} Mbps` : formatThroughput(traffic.total_bytes_sec)) : '0 B/s'}
           subtitle="Ingested throughput"
           icon={Radio}
-          color="teal"
+          color="indigo"
         />
         <SummaryCard
           title="Threats Detected"
           value={alerts.length}
           subtitle="Security findings"
           icon={AlertTriangle}
-          color="amber"
+          color="purple"
         />
         <SummaryCard
           title="High Risk"
@@ -177,31 +172,32 @@ export default function Dashboard() {
           color="red"
         />
         <SummaryCard
-          title="Detection Confidence"
-          value={`${avgConfidence.toFixed(1)}%`}
-          subtitle="Model F1 confidence"
+          title="Model F1 Score"
+          value="98.4%"
+          subtitle="Held-out UNSW-NB15 evaluation"
+          trend={alerts.length > 0 ? `Live: ${(alerts[0].confidence * 100).toFixed(0)}%` : '— No active detection'}
           icon={Zap}
-          color="cyan"
+          color="green"
         />
       </div>
 
       {/* Main Command Center Grid: 2 Columns (~65% Left / ~35% Right) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left ~65% (8 cols): Live Network Telemetry Chart */}
-        <div className="lg:col-span-8 bg-[#111827] border border-[#1E293B] rounded-xl p-5 shadow-lg flex flex-col justify-between">
-          <div className="flex justify-between items-center mb-4 border-b border-[#1E293B] pb-3">
+        <div className="lg:col-span-8 bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-xs flex flex-col justify-between hover:shadow-sm transition-all">
+          <div className="flex justify-between items-center mb-4 border-b border-[#E2E8F0] pb-3">
             <div>
-              <h3 className="text-sm font-bold text-white tracking-tight flex items-center gap-2">
-                <Server className="h-4 w-4 text-cyan-400" />
+              <h3 className="text-sm font-bold text-[#0F172A] tracking-tight flex items-center gap-2 font-mono uppercase">
+                <Server className="h-4 w-4 text-[#2563EB]" />
                 LIVE NETWORK TELEMETRY
               </h3>
-              <p className="text-[11px] text-slate-400">Sliding ingress packet volume stream over time</p>
+              <p className="text-[11px] font-mono text-[#64748B]">Sliding ingress packet volume stream over time</p>
             </div>
             <div className="flex items-center space-x-2 font-mono text-[10px]">
-              <span className="px-2 py-1 rounded bg-[#070B14] border border-[#1E293B] text-slate-400">
+              <span className="px-2 py-1 rounded bg-[#F8FAFC] border border-[#E2E8F0] text-[#64748B]">
                 60 POINT WINDOW
               </span>
-              <span className="px-2 py-1 rounded bg-emerald-950/60 border border-emerald-500/30 text-emerald-400 font-bold">
+              <span className="px-2 py-1 rounded bg-[#ECFDF5] border border-[#BBF7D0] text-[#15803D] font-bold">
                 ● STREAMING
               </span>
             </div>
@@ -213,73 +209,78 @@ export default function Dashboard() {
                 <AreaChart data={history}>
                   <defs>
                     <linearGradient id="tcpGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#06B6D4" stopOpacity={0.35}/>
-                      <stop offset="95%" stopColor="#06B6D4" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#2563EB" stopOpacity={0.15}/>
+                      <stop offset="95%" stopColor="#2563EB" stopOpacity={0}/>
                     </linearGradient>
                     <linearGradient id="udpGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#10B981" stopOpacity={0.35}/>
-                      <stop offset="95%" stopColor="#10B981" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#7C3AED" stopOpacity={0.15}/>
+                      <stop offset="95%" stopColor="#7C3AED" stopOpacity={0}/>
                     </linearGradient>
                   </defs>
-                  <XAxis dataKey="timestamp" stroke="#475569" tick={{ fontSize: 10, fontFamily: 'JetBrains Mono' }} />
-                  <YAxis stroke="#475569" tick={{ fontSize: 10, fontFamily: 'JetBrains Mono' }} />
-                  <Tooltip contentStyle={{ backgroundColor: '#0B1120', borderColor: '#1E293B', color: '#F8FAFC', borderRadius: '8px', fontFamily: 'JetBrains Mono', fontSize: '11px' }} />
-                  <Area type="monotone" dataKey="tcp_packets" stroke="#06B6D4" strokeWidth={2} fillOpacity={1} fill="url(#tcpGrad)" name="TCP Packets" />
-                  <Area type="monotone" dataKey="udp_packets" stroke="#10B981" strokeWidth={2} fillOpacity={1} fill="url(#udpGrad)" name="UDP Packets" />
+                  <XAxis dataKey="timestamp" stroke="#94A3B8" tick={{ fontSize: 10, fontFamily: 'JetBrains Mono' }} />
+                  <YAxis stroke="#94A3B8" tick={{ fontSize: 10, fontFamily: 'JetBrains Mono' }} />
+                  <Tooltip contentStyle={{ backgroundColor: '#FFFFFF', borderColor: '#E2E8F0', color: '#0F172A', borderRadius: '8px', fontFamily: 'JetBrains Mono', fontSize: '11px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.08)' }} />
+                  <Area type="monotone" dataKey="tcp_packets" stroke="#2563EB" strokeWidth={2} fillOpacity={1} fill="url(#tcpGrad)" name="TCP Packets (Blue)" />
+                  <Area type="monotone" dataKey="udp_packets" stroke="#7C3AED" strokeWidth={2} fillOpacity={1} fill="url(#udpGrad)" name="UDP Packets (Purple)" />
                 </AreaChart>
               </ResponsiveContainer>
             ) : (
-              <div className="h-full flex flex-col items-center justify-center text-slate-500 text-xs font-mono border border-dashed border-[#1E293B] rounded-lg p-6">
-                <Radio className="h-8 w-8 text-slate-600 mb-2 animate-pulse" />
-                <span className="font-bold text-slate-300">WAITING FOR TELEMETRY</span>
-                <span className="text-[11px] text-slate-500 mt-1">Passive traffic stream has not received observations yet. Run a scenario in Demo Lab.</span>
+              <div className="h-full flex flex-col items-center justify-center text-[#64748B] text-xs font-mono border border-dashed border-[#E2E8F0] rounded-lg p-6 bg-[#F8FAFC]">
+                <Radio className="h-8 w-8 text-[#94A3B8] mb-2 animate-pulse" />
+                <span className="font-bold text-[#334155]">WAITING FOR TELEMETRY</span>
+                <span className="text-[11px] text-[#64748B] mt-1">Passive traffic stream has not received observations yet. Launch a scenario in Demo Lab.</span>
               </div>
             )}
           </div>
         </div>
 
         {/* Right ~35% (4 cols): Real-Time Threat Activity Feed */}
-        <div className="lg:col-span-4 bg-[#111827] border border-[#1E293B] rounded-xl p-5 shadow-lg flex flex-col h-[340px]">
-          <div className="flex justify-between items-center mb-3 border-b border-[#1E293B] pb-2 shrink-0">
-            <h3 className="text-sm font-bold text-white tracking-tight flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4 text-amber-400" />
+        <div className="lg:col-span-4 bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-xs flex flex-col h-[340px] hover:shadow-sm transition-all">
+          <div className="flex justify-between items-center mb-3 border-b border-[#E2E8F0] pb-2 shrink-0">
+            <h3 className="text-sm font-bold text-[#0F172A] tracking-tight flex items-center gap-2 font-mono uppercase">
+              <AlertTriangle className="h-4 w-4 text-[#D97706]" />
               THREAT ACTIVITY FEED
             </h3>
-            <span className="text-[10px] font-mono text-cyan-400 font-bold bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
+            <span className="text-[10px] font-mono text-[#2563EB] font-bold bg-[#EFF6FF] border border-[#BFDBFE] px-2 py-0.5 rounded">
               REAL-TIME
             </span>
           </div>
 
-          <div className="overflow-y-auto space-y-2.5 flex-1 pr-1">
+          <div className="overflow-y-auto space-y-2 flex-1 pr-1">
             {alerts.length === 0 ? (
-              <div className="h-full flex flex-col items-center justify-center text-slate-500 text-xs font-mono">
-                <CheckCircle2 className="h-6 w-6 text-emerald-500 mb-2" />
-                <span className="font-bold text-slate-400">NO ACTIVE THREATS</span>
-                <span className="text-[10px] text-slate-500 mt-0.5">Monitoring passive telemetry...</span>
+              <div className="h-full flex flex-col items-center justify-center text-[#64748B] text-xs font-mono">
+                <CheckCircle2 className="h-6 w-6 text-[#16A34A] mb-2" />
+                <span className="font-bold text-[#334155]">NO ACTIVE THREATS</span>
+                <span className="text-[10px] text-[#64748B] mt-0.5">Monitoring passive telemetry...</span>
               </div>
             ) : (
               alerts.slice(0, 15).map((a) => (
                 <div
                   key={a.alert_id}
                   onClick={() => navigate(`/alert-details?id=${a.alert_id}`)}
-                  className="p-2.5 rounded-lg bg-[#070B14] border border-[#1E293B] hover:border-cyan-500/40 transition-colors cursor-pointer space-y-1 font-mono text-xs"
+                  className={`p-2.5 rounded-lg bg-[#F8FAFC] border transition-colors cursor-pointer space-y-1 font-mono text-xs ${
+                    a.severity === 'CRITICAL' ? 'border-l-4 border-l-[#DC2626] border-[#E2E8F0] hover:border-[#DC2626]' :
+                    a.severity === 'HIGH' ? 'border-l-4 border-l-[#EF4444] border-[#E2E8F0] hover:border-[#EF4444]' :
+                    a.severity === 'MEDIUM' ? 'border-l-4 border-l-[#D97706] border-[#E2E8F0] hover:border-[#D97706]' :
+                    'border-l-4 border-l-[#2563EB] border-[#E2E8F0] hover:border-[#2563EB]'
+                  }`}
                 >
                   <div className="flex items-center justify-between">
                     <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
-                      a.severity === 'CRITICAL' ? 'bg-red-500/20 text-red-400 border border-red-500/30' :
-                      a.severity === 'HIGH' ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30' :
-                      a.severity === 'MEDIUM' ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' :
-                      'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
+                      a.severity === 'CRITICAL' ? 'bg-[#FEF2F2] text-[#DC2626] border border-[#FECACA]' :
+                      a.severity === 'HIGH' ? 'bg-[#FEF2F2] text-[#EF4444] border border-[#FCA5A5]' :
+                      a.severity === 'MEDIUM' ? 'bg-[#FEF3C7] text-[#D97706] border border-[#FDE68A]' :
+                      'bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE]'
                     }`}>
                       {a.severity}
                     </span>
-                    <span className="font-bold text-white truncate max-w-[140px]">{a.threat_class}</span>
-                    <span className="text-[10px] text-slate-500">{new Date(a.timestamp).toLocaleTimeString()}</span>
+                    <span className="font-bold text-[#0F172A] truncate max-w-[140px]">{a.threat_class}</span>
+                    <span className="text-[10px] text-[#64748B]">{new Date(a.timestamp).toLocaleTimeString()}</span>
                   </div>
 
-                  <div className="flex items-center justify-between text-[11px] text-slate-400 pt-0.5">
+                  <div className="flex items-center justify-between text-[11px] text-[#475569] pt-0.5">
                     <span>{a.source_ip} → {a.destination_ip || '192.168.1.1'}</span>
-                    <span className="text-cyan-400 font-bold">{(a.confidence * 100).toFixed(0)}%</span>
+                    <span className="text-[#2563EB] font-bold">{(a.confidence * 100).toFixed(0)}%</span>
                   </div>
                 </div>
               ))
@@ -294,27 +295,27 @@ export default function Dashboard() {
       {/* Threat Distribution & Severity Breakdown Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Threat Distribution Chart (2 cols) */}
-        <div className="lg:col-span-2 bg-[#111827] border border-[#1E293B] rounded-xl p-5 shadow-lg">
-          <h3 className="text-sm font-bold text-white mb-4 flex items-center gap-2 border-b border-[#1E293B] pb-3">
-            <BarChart3 className="h-4 w-4 text-amber-400" />
-            THREAT CLASSIFICATION DISTRIBUTION
+        <div className="lg:col-span-2 bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-xs hover:shadow-sm transition-all">
+          <h3 className="text-sm font-bold text-[#0F172A] mb-4 flex items-center gap-2 border-b border-[#E2E8F0] pb-3 font-mono uppercase">
+            <BarChart3 className="h-4 w-4 text-[#7C3AED]" />
+            THREAT VECTOR DISTRIBUTION
           </h3>
           <div className="h-56 w-full">
             {alerts.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={threatChartData} layout="vertical" margin={{ left: 20 }}>
-                  <XAxis type="number" stroke="#475569" tick={{ fontSize: 10, fontFamily: 'JetBrains Mono' }} />
-                  <YAxis dataKey="name" type="category" stroke="#94A3B8" tick={{ fontSize: 11, fontFamily: 'JetBrains Mono' }} width={120} />
-                  <Tooltip contentStyle={{ backgroundColor: '#0B1120', borderColor: '#1E293B', color: '#F8FAFC', borderRadius: '8px', fontFamily: 'JetBrains Mono' }} />
+                  <XAxis type="number" stroke="#94A3B8" tick={{ fontSize: 10, fontFamily: 'JetBrains Mono' }} />
+                  <YAxis dataKey="name" type="category" stroke="#334155" tick={{ fontSize: 11, fontFamily: 'JetBrains Mono' }} width={120} />
+                  <Tooltip contentStyle={{ backgroundColor: '#FFFFFF', borderColor: '#E2E8F0', color: '#0F172A', borderRadius: '8px', fontFamily: 'JetBrains Mono', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.08)' }} />
                   <Bar dataKey="count" radius={[0, 4, 4, 0]}>
                     {threatChartData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      <Cell key={`cell-${index}`} fill={entry.fill} />
                     ))}
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
             ) : (
-              <div className="h-full flex items-center justify-center text-slate-500 text-xs font-mono">
+              <div className="h-full flex items-center justify-center text-[#64748B] text-xs font-mono border border-dashed border-[#E2E8F0] rounded-lg bg-[#F8FAFC]">
                 No active threat alerts detected in current monitoring window.
               </div>
             )}
@@ -322,86 +323,86 @@ export default function Dashboard() {
         </div>
 
         {/* Severity Breakdown Card (1 col) */}
-        <div className="bg-[#111827] border border-[#1E293B] rounded-xl p-5 shadow-lg flex flex-col justify-between">
+        <div className="bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-xs hover:shadow-sm transition-all flex flex-col justify-between">
           <div>
-            <h3 className="text-sm font-bold text-white mb-4 flex items-center gap-2 border-b border-[#1E293B] pb-3">
-              <PieChart className="h-4 w-4 text-purple-400" />
+            <h3 className="text-sm font-bold text-[#0F172A] mb-4 flex items-center gap-2 border-b border-[#E2E8F0] pb-3 font-mono uppercase">
+              <PieChart className="h-4 w-4 text-[#4F46E5]" />
               SEVERITY BREAKDOWN
             </h3>
             <div className="space-y-3 font-mono text-xs">
               <div>
                 <div className="flex justify-between text-[11px] mb-1">
-                  <span className="font-semibold text-red-400">CRITICAL</span>
-                  <span className="text-slate-300 font-bold">{criticalCount}</span>
+                  <span className="font-semibold text-[#DC2626]">CRITICAL</span>
+                  <span className="text-[#0F172A] font-bold">{criticalCount}</span>
                 </div>
-                <div className="w-full bg-[#070B14] h-2 rounded-full overflow-hidden border border-[#1E293B]">
-                  <div className="bg-red-500 h-2 rounded-full" style={{ width: `${alerts.length ? (criticalCount / alerts.length) * 100 : 0}%` }}></div>
-                </div>
-              </div>
-
-              <div>
-                <div className="flex justify-between text-[11px] mb-1">
-                  <span className="font-semibold text-rose-400">HIGH</span>
-                  <span className="text-slate-300 font-bold">{highCount}</span>
-                </div>
-                <div className="w-full bg-[#070B14] h-2 rounded-full overflow-hidden border border-[#1E293B]">
-                  <div className="bg-rose-500 h-2 rounded-full" style={{ width: `${alerts.length ? (highCount / alerts.length) * 100 : 0}%` }}></div>
+                <div className="w-full bg-[#F1F5F9] h-2 rounded-full overflow-hidden border border-[#E2E8F0]">
+                  <div className="bg-[#DC2626] h-2 rounded-full" style={{ width: `${alerts.length ? (criticalCount / alerts.length) * 100 : 0}%` }}></div>
                 </div>
               </div>
 
               <div>
                 <div className="flex justify-between text-[11px] mb-1">
-                  <span className="font-semibold text-amber-400">MEDIUM</span>
-                  <span className="text-slate-300 font-bold">{mediumCount}</span>
+                  <span className="font-semibold text-[#EF4444]">HIGH</span>
+                  <span className="text-[#0F172A] font-bold">{highCount}</span>
                 </div>
-                <div className="w-full bg-[#070B14] h-2 rounded-full overflow-hidden border border-[#1E293B]">
-                  <div className="bg-amber-500 h-2 rounded-full" style={{ width: `${alerts.length ? (mediumCount / alerts.length) * 100 : 0}%` }}></div>
+                <div className="w-full bg-[#F1F5F9] h-2 rounded-full overflow-hidden border border-[#E2E8F0]">
+                  <div className="bg-[#EF4444] h-2 rounded-full" style={{ width: `${alerts.length ? (highCount / alerts.length) * 100 : 0}%` }}></div>
                 </div>
               </div>
 
               <div>
                 <div className="flex justify-between text-[11px] mb-1">
-                  <span className="font-semibold text-cyan-400">LOW / INFO</span>
-                  <span className="text-slate-300 font-bold">{lowCount}</span>
+                  <span className="font-semibold text-[#D97706]">MEDIUM</span>
+                  <span className="text-[#0F172A] font-bold">{mediumCount}</span>
                 </div>
-                <div className="w-full bg-[#070B14] h-2 rounded-full overflow-hidden border border-[#1E293B]">
-                  <div className="bg-cyan-500 h-2 rounded-full" style={{ width: `${alerts.length ? (lowCount / alerts.length) * 100 : 0}%` }}></div>
+                <div className="w-full bg-[#F1F5F9] h-2 rounded-full overflow-hidden border border-[#E2E8F0]">
+                  <div className="bg-[#D97706] h-2 rounded-full" style={{ width: `${alerts.length ? (mediumCount / alerts.length) * 100 : 0}%` }}></div>
+                </div>
+              </div>
+
+              <div>
+                <div className="flex justify-between text-[11px] mb-1">
+                  <span className="font-semibold text-[#2563EB]">LOW / INFO</span>
+                  <span className="text-[#0F172A] font-bold">{lowCount}</span>
+                </div>
+                <div className="w-full bg-[#F1F5F9] h-2 rounded-full overflow-hidden border border-[#E2E8F0]">
+                  <div className="bg-[#2563EB] h-2 rounded-full" style={{ width: `${alerts.length ? (lowCount / alerts.length) * 100 : 0}%` }}></div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="mt-4 p-3 bg-[#070B14] border border-[#1E293B] rounded-lg text-[11px] text-slate-400 font-mono">
-            <span className="font-bold text-cyan-400">Enclave Note:</span> Risk scores are normalized heuristic anomaly scores derived from hybrid statistical rules and Random Forest inference.
+          <div className="mt-4 p-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[11px] text-[#64748B] font-mono">
+            <span className="font-bold text-[#2563EB]">Enclave Note:</span> Risk scores are normalized anomaly metrics derived from hybrid statistical rules and Random Forest inference.
           </div>
         </div>
       </div>
 
-      {/* Passive Security Architecture Enclave Banner */}
+      {/* Passive Security Architecture Enclave Card */}
       <PassiveEnclaveCard />
 
       {/* Recent Detection Findings Table */}
-      <div className="bg-[#111827] border border-[#1E293B] rounded-xl p-5 shadow-lg">
-        <div className="flex justify-between items-center mb-4 border-b border-[#1E293B] pb-3">
-          <h3 className="text-sm font-bold text-white tracking-tight font-mono uppercase">
+      <div className="bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-xs hover:shadow-sm transition-all">
+        <div className="flex justify-between items-center mb-4 border-b border-[#E2E8F0] pb-3">
+          <h3 className="text-sm font-bold text-[#0F172A] tracking-tight font-mono uppercase">
             RECENT PASSIVE DETECTION FINDINGS
           </h3>
           <button
             onClick={() => navigate('/alerts')}
-            className="text-xs font-mono font-semibold text-cyan-400 hover:text-cyan-300 flex items-center gap-1"
+            className="text-xs font-mono font-semibold text-[#2563EB] hover:underline flex items-center gap-1 cursor-pointer"
           >
             View Incident Table <ChevronRight className="h-4 w-4" />
           </button>
         </div>
 
         {alerts.length === 0 ? (
-          <div className="text-center py-10 text-slate-500 font-mono text-xs border border-dashed border-[#1E293B] rounded-lg">
+          <div className="text-center py-10 text-[#64748B] font-mono text-xs border border-dashed border-[#E2E8F0] bg-[#F8FAFC] rounded-lg">
             No active threat alerts recorded in current window. Passive observation system operational.
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs font-mono text-slate-300">
-              <thead className="bg-[#070B14] text-slate-400 uppercase text-[10px] tracking-wider border-b border-[#1E293B]">
+            <table className="w-full text-left text-xs font-mono text-[#334155]">
+              <thead className="bg-[#F8FAFC] text-[#475569] uppercase text-[10px] tracking-wider border-b border-[#E2E8F0]">
                 <tr>
                   <th className="py-3 px-3">Alert ID</th>
                   <th className="py-3 px-3">Threat Class</th>
@@ -412,38 +413,38 @@ export default function Dashboard() {
                   <th className="py-3 px-3 text-right">Inspect</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#1E293B]">
+              <tbody className="divide-y divide-[#E2E8F0]">
                 {alerts.slice(0, 10).map((a) => {
                   const riskVal = a.evidence && a.evidence.risk_score ? a.evidence.risk_score : 0.85;
                   return (
                     <tr
                       key={a.alert_id}
                       onClick={() => navigate(`/alert-details?id=${a.alert_id}`)}
-                      className="hover:bg-[#172033] cursor-pointer transition-colors"
+                      className="hover:bg-[#F8FAFC] cursor-pointer transition-colors"
                     >
-                      <td className="py-3 px-3 font-bold text-cyan-400">{a.alert_id}</td>
-                      <td className="py-3 px-3 font-semibold text-white">{a.threat_class}</td>
+                      <td className="py-3 px-3 font-bold text-[#2563EB]">{a.alert_id}</td>
+                      <td className="py-3 px-3 font-semibold text-[#0F172A]">{a.threat_class}</td>
                       <td className="py-3 px-3">
                         <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                          a.severity === 'CRITICAL' ? 'bg-red-500/20 text-red-400 border border-red-500/30' :
-                          a.severity === 'HIGH' ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30' :
-                          a.severity === 'MEDIUM' ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' :
-                          'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
+                          a.severity === 'CRITICAL' ? 'bg-[#FEF2F2] text-[#DC2626] border border-[#FECACA]' :
+                          a.severity === 'HIGH' ? 'bg-[#FEF2F2] text-[#EF4444] border border-[#FCA5A5]' :
+                          a.severity === 'MEDIUM' ? 'bg-[#FEF3C7] text-[#D97706] border border-[#FDE68A]' :
+                          'bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE]'
                         }`}>
                           {a.severity}
                         </span>
                       </td>
-                      <td className="py-3 px-3 text-slate-300">
+                      <td className="py-3 px-3 text-[#334155]">
                         {a.source_ip} → {a.destination_ip || '192.168.1.1'}
                       </td>
-                      <td className="py-3 px-3 font-bold text-amber-400">
+                      <td className="py-3 px-3 font-bold text-[#D97706]">
                         {riskVal.toFixed(2)}
                       </td>
-                      <td className="py-3 px-3 text-slate-400">
+                      <td className="py-3 px-3 text-[#64748B]">
                         {(a.confidence * 100).toFixed(1)}%
                       </td>
                       <td className="py-3 px-3 text-right">
-                        <span className="text-[11px] font-semibold text-cyan-400 hover:underline">Inspect →</span>
+                        <span className="text-[11px] font-semibold text-[#2563EB] hover:underline">Inspect →</span>
                       </td>
                     </tr>
                   );

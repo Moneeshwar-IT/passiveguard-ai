@@ -1,5 +1,5 @@
 import React from 'react';
-import { Eye, Layers, Activity, Cpu, ShieldCheck, AlertTriangle, ArrowRight } from 'lucide-react';
+import { Eye, Layers, Activity, Cpu, ShieldCheck, AlertTriangle } from 'lucide-react';
 
 export default function DetectionPipeline() {
   const stages = [
@@ -7,82 +7,89 @@ export default function DetectionPipeline() {
       title: 'PASSIVE TRAFFIC',
       icon: Eye,
       detail: 'Out-of-band TAP',
-      sub: 'Zero outbound transmission',
-      color: 'text-cyan-400 border-cyan-500/30 bg-cyan-950/40',
+      sub: 'Zero outbound packets',
+      color: 'text-[#2563EB] border-[#BFDBFE] bg-[#EFF6FF]',
+      accent: 'border-l-4 border-l-[#2563EB]',
     },
     {
       title: 'FLOW FEATURES',
       icon: Layers,
       detail: 'Scapy Dissection',
       sub: '15+ Extracted Vectors',
-      color: 'text-sky-400 border-sky-500/30 bg-sky-950/40',
+      color: 'text-[#2563EB] border-[#BFDBFE] bg-[#EFF6FF]',
+      accent: 'border-l-4 border-l-[#2563EB]',
     },
     {
       title: 'BEHAVIORAL ANALYSIS',
       icon: Activity,
       detail: 'Entropy & Jitter',
       sub: 'Temporal Windowing',
-      color: 'text-teal-400 border-teal-500/30 bg-teal-950/40',
+      color: 'text-[#7C3AED] border-[#DDD6FE] bg-[#F5F3FF]',
+      accent: 'border-l-4 border-l-[#7C3AED]',
     },
     {
       title: 'ML INFERENCE',
       icon: Cpu,
       detail: 'Random Forest',
       sub: 'rf-v1.0 / UNSW-NB15',
-      color: 'text-purple-400 border-purple-500/30 bg-purple-950/40',
+      color: 'text-[#4F46E5] border-[#C7D2FE] bg-[#EEF2FF]',
+      accent: 'border-l-4 border-l-[#4F46E5]',
     },
     {
       title: 'RISK FUSION',
       icon: ShieldCheck,
       detail: 'Hybrid Engine',
-      sub: 'Score Aggregation',
-      color: 'text-amber-400 border-amber-500/30 bg-amber-950/40',
+      sub: 'Multi-Signal Fusion',
+      color: 'text-[#4F46E5] border-[#C7D2FE] bg-[#EEF2FF]',
+      accent: 'border-l-4 border-l-[#4F46E5]',
     },
     {
       title: 'THREAT ALERT',
       icon: AlertTriangle,
       detail: 'SOC Dispatch',
       sub: 'WebSocket Stream',
-      color: 'text-rose-400 border-rose-500/30 bg-rose-950/40',
+      color: 'text-[#DC2626] border-[#FECACA] bg-[#FEF2F2]',
+      accent: 'border-l-4 border-l-[#DC2626]',
     },
   ];
 
   return (
-    <div className="bg-[#111827] border border-[#1E293B] rounded-xl p-5 shadow-lg">
-      <div className="flex items-center justify-between mb-4 border-b border-[#1E293B] pb-3">
+    <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-5 shadow-xs transition-all hover:shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 border-b border-[#E2E8F0] pb-3">
         <div>
-          <h3 className="text-sm font-bold text-white tracking-tight flex items-center gap-2">
-            <Cpu className="h-4 w-4 text-cyan-400" />
-            AI Threat Detection Pipeline Architecture
+          <h3 className="text-sm font-bold text-[#0F172A] tracking-tight flex items-center gap-2 font-mono uppercase">
+            <Cpu className="h-4 w-4 text-[#4F46E5]" />
+            AI THREAT DETECTION PIPELINE ARCHITECTURE
           </h3>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-[#64748B] font-mono mt-0.5">
             Real-time flow path from unidirectional packet capture to hybrid statistical ML risk fusion.
           </p>
         </div>
-        <span className="text-[10px] font-mono font-bold text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2.5 py-1 rounded-full uppercase">
-          HYBRID PIPELINE ACTIVE
+        <span className="text-[10px] font-mono font-bold text-[#4F46E5] bg-[#EEF2FF] border border-[#C7D2FE] px-2.5 py-1 rounded-full uppercase shrink-0">
+          HYBRID ML ENGINE ACTIVE
         </span>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-3 items-center">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-3 items-stretch">
         {stages.map((st, idx) => {
           const Icon = st.icon;
           return (
-            <React.Fragment key={st.title}>
-              <div className={`p-3.5 rounded-lg border ${st.color} transition-all hover:scale-[1.02] flex flex-col justify-between h-full`}>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">
-                    0{idx + 1}
-                  </span>
-                  <Icon className="h-4 w-4" />
-                </div>
-                <div>
-                  <div className="text-xs font-bold text-white tracking-tight">{st.title}</div>
-                  <div className="text-[11px] font-mono font-semibold text-slate-300 mt-1">{st.detail}</div>
-                  <div className="text-[10px] text-slate-400 mt-0.5">{st.sub}</div>
-                </div>
+            <div
+              key={st.title}
+              className={`p-3.5 rounded-lg border ${st.color} ${st.accent} transition-all hover:scale-[1.02] flex flex-col justify-between h-full font-mono shadow-xs`}
+            >
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">
+                  0{idx + 1}
+                </span>
+                <Icon className="h-4 w-4" />
               </div>
-            </React.Fragment>
+              <div>
+                <div className="text-xs font-bold text-[#0F172A] tracking-tight">{st.title}</div>
+                <div className="text-[11px] font-semibold text-[#334155] mt-1">{st.detail}</div>
+                <div className="text-[10px] text-[#64748B] mt-0.5">{st.sub}</div>
+              </div>
+            </div>
           );
         })}
       </div>
