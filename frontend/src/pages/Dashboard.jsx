@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import {
   fetchAlerts, fetchCurrentTraffic, fetchHistoricalTraffic,
-  createWebSocketConnection, formatThroughput
+  createWebSocketConnection, formatThroughput, formatIndianTime
 } from '../services/api';
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
@@ -274,7 +274,7 @@ export default function Dashboard() {
                       {a.severity}
                     </span>
                     <span className="font-bold text-[#0F172A] truncate max-w-[140px]">{a.threat_class}</span>
-                    <span className="text-[10px] text-[#64748B]">{new Date(a.timestamp).toLocaleTimeString()}</span>
+                    <span className="text-[10px] text-[#64748B]">{formatIndianTime(a.timestamp)}</span>
                   </div>
 
                   <div className="flex items-center justify-between text-[11px] text-[#475569] pt-0.5">

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { fetchAlerts, createWebSocketConnection } from '../services/api';
+import { fetchAlerts, createWebSocketConnection, formatIndianDateTime } from '../services/api';
 import { AlertTriangle, Filter, Search, Clock, Shield, Radio, ArrowRight } from 'lucide-react';
 
 export default function Alerts() {
@@ -218,7 +218,7 @@ export default function Alerts() {
                     <td className="py-3.5 px-4 font-bold text-[#2563EB]">{a.alert_id}</td>
                     <td className="py-3.5 px-4 font-bold text-[#0F172A]">{a.threat_class}</td>
                     <td className="py-3.5 px-4 text-[#64748B]">
-                      {a.timestamp ? new Date(a.timestamp).toLocaleTimeString() : 'N/A'}
+                      {formatIndianDateTime(a.timestamp)}
                     </td>
                     <td className="py-3.5 px-4 text-[#334155]">
                       {a.source_ip}:{a.source_port} → {a.destination_ip}:{a.destination_port}

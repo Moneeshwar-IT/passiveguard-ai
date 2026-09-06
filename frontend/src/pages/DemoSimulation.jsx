@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import {
   runDemoScenario, resetDemoState, fetchDemoStatus, fetchDemoScenarios,
-  createWebSocketConnection, API_BASE_URL
+  createWebSocketConnection, API_BASE_URL, formatIndianTime
 } from '../services/api';
 
 const formatApiError = (err, fallbackText) => {
@@ -567,7 +567,7 @@ export default function DemoSimulation() {
               {liveWsAlerts.map((alt, idx) => (
                 <div key={idx} className="p-3 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0] flex items-center justify-between text-xs">
                   <div className="flex items-center gap-3">
-                    <span className="text-[#64748B]">{new Date(alt.timestamp).toLocaleTimeString()}</span>
+                    <span className="text-[#64748B]">{formatIndianTime(alt.timestamp)}</span>
                     <span className="font-bold text-[#2563EB]">{alt.alert_id}</span>
                     <span className="font-bold text-[#0F172A]">{alt.threat_class}</span>
                     {getSeverityBadge(alt.severity)}

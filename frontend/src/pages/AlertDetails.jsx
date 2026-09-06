@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { FileText, Search, Shield, AlertTriangle, CheckCircle, Cpu, Layers, Clock, ArrowLeft } from 'lucide-react';
-import { fetchAlertById, fetchAlerts } from '../services/api';
+import { fetchAlertById, fetchAlerts, formatIndianDateTime, formatIndianTime } from '../services/api';
 
 export default function AlertDetails() {
   const [searchParams] = useSearchParams();
@@ -153,7 +153,7 @@ export default function AlertDetails() {
               </div>
               <h3 className="text-2xl font-bold font-mono text-[#0F172A] tracking-tight">{alert.threat_class}</h3>
               <p className="text-xs text-[#64748B] font-mono mt-1">
-                Detected at {new Date(alert.timestamp).toLocaleString()}
+                Detected at {formatIndianDateTime(alert.timestamp)}
               </p>
             </div>
 
@@ -291,7 +291,7 @@ export default function AlertDetails() {
                     <span className="absolute -left-[31px] top-1.5 h-3.5 w-3.5 rounded-full bg-[#2563EB] border-2 border-white shadow-xs"></span>
                     <div className="bg-[#F8FAFC] p-3 rounded-lg border border-[#E2E8F0] text-xs">
                       <div className="flex justify-between items-center text-[#64748B]">
-                        <span className="font-bold text-[#2563EB]">{new Date(ca.timestamp).toLocaleTimeString()}</span>
+                        <span className="font-bold text-[#2563EB]">{formatIndianTime(ca.timestamp)}</span>
                         <span className="text-[11px]">{ca.alert_id}</span>
                       </div>
                       <p className="font-bold text-[#0F172A] mt-1">{ca.threat_class}</p>

@@ -138,8 +138,36 @@ export const formatThroughput = (bytesPerSec) => {
   const bitsPerSec = bytesPerSec * 8;
   if (bitsPerSec >= 1_000_000_000) return `${(bitsPerSec / 1_000_000_000).toFixed(2)} Gbps`;
   if (bitsPerSec >= 1_000_000) return `${(bitsPerSec / 1_000_000).toFixed(2)} Mbps`;
-  if (bitsPerSec >= 1_000) return `${(bitsPerSec / 1_000).toFixed(2)} Kbps`;
   return `${bitsPerSec.toFixed(0)} bps`;
+};
+
+export const formatIndianTime = (timestamp = new Date()) => {
+  if (!timestamp) return 'N/A';
+  const d = new Date(timestamp);
+  if (isNaN(d.getTime())) return 'N/A';
+  return d.toLocaleTimeString('en-IN', {
+    timeZone: 'Asia/Kolkata',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true
+  }) + ' IST';
+};
+
+export const formatIndianDateTime = (timestamp = new Date()) => {
+  if (!timestamp) return 'N/A';
+  const d = new Date(timestamp);
+  if (isNaN(d.getTime())) return 'N/A';
+  return d.toLocaleString('en-IN', {
+    timeZone: 'Asia/Kolkata',
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true
+  }) + ' IST';
 };
 
 export const createWebSocketConnection = (onMessage, onStatusChange) => {

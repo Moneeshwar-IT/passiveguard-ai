@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Eye, Activity, AlertCircle, Clock, RefreshCw } from 'lucide-react';
-import { fetchHealth, resetDemoState } from '../services/api';
+import { fetchHealth, resetDemoState, formatIndianDateTime } from '../services/api';
 
 export default function Header({ wsStatus = 'connected', onResetSuccess }) {
   const location = useLocation();
@@ -26,8 +26,7 @@ export default function Header({ wsStatus = 'connected', onResetSuccess }) {
 
   useEffect(() => {
     const updateTime = () => {
-      const now = new Date();
-      setTimeString(now.toISOString().replace('T', ' ').substring(0, 19) + ' UTC');
+      setTimeString(formatIndianDateTime(new Date()));
     };
     updateTime();
     const timer = setInterval(updateTime, 1000);
