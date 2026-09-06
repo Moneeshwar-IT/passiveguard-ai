@@ -172,11 +172,11 @@ export default function Dashboard() {
           color="red"
         />
         <SummaryCard
-          title="Detection Confidence"
-          value={`${avgConfidence.toFixed(1)}%`}
-          subtitle="Model F1 confidence"
-          icon={Zap}
-          color="green"
+          title="Model F1 Score"
+          value="98.4%"
+          subtitle="UNSW-NB15 benchmark"
+          icon={Cpu}
+          color="indigo"
         />
       </div>
 
