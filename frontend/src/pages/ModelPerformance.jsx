@@ -102,67 +102,67 @@ export default function ModelPerformance() {
   return (
     <div className="space-y-6 pb-12 font-sans">
       {/* Header */}
-      <div className="border-b border-[#E2E8F0] pb-4">
+      <div className="border-b border-slate-800/80 pb-4">
         <div className="flex items-center space-x-2">
-          <h2 className="text-xl font-bold font-mono text-[#0F172A] tracking-tight uppercase">
-            AI MODEL PERFORMANCE & DETECTOR REGISTRY
+          <h2 className="text-xl font-bold font-mono text-slate-100 tracking-tight uppercase">
+            AI MODEL REGISTRY & REPOSITORY BENCHMARKS
           </h2>
-          <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-[#EEF2FF] border border-[#C7D2FE] text-[#4F46E5]">
-            INDIGO AI ARCHITECTURE
+          <span className="px-2.5 py-0.5 rounded text-[10px] font-mono font-bold bg-indigo-500/10 border border-indigo-500/30 text-indigo-400">
+            HUB REPOSITORIES
           </span>
         </div>
-        <p className="text-xs text-[#475569] mt-0.5 font-medium">
+        <p className="text-xs text-slate-400 mt-0.5 font-medium">
           Authoritative threat detector health, trained binary artifacts, and benchmark metrics.
         </p>
       </div>
 
       {/* Provenance Disclaimer Banner */}
-      <div className="bg-[#FFFFFF] border border-[#E2E8F0] border-t-4 border-t-[#4F46E5] p-5 rounded-xl space-y-3 shadow-xs hover:shadow-md transition-all">
-        <div className="flex items-center gap-3 text-[#7C3AED] font-mono font-bold text-xs">
+      <div className="bg-slate-900/80 backdrop-blur-md border border-slate-800/80 border-t-4 border-t-indigo-400 p-5 rounded-xl space-y-3 shadow-xl">
+        <div className="flex items-center gap-3 text-purple-400 font-mono font-bold text-xs">
           <Info className="h-4 w-4 shrink-0" />
           <span>MODEL PROVENANCE & EVALUATION METHODOLOGY DISCLAIMER</span>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono text-[#334155]">
-          <div className="p-3.5 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0] space-y-1">
-            <div className="font-bold text-[#4F46E5] flex items-center gap-1.5">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono text-slate-300">
+          <div className="p-3.5 rounded-lg bg-slate-950/60 border border-slate-800/80 space-y-1">
+            <div className="font-bold text-indigo-400 flex items-center gap-1.5">
               <Database className="w-3.5 h-3.5" />
               Dataset Training & Held-Out Benchmark
             </div>
-            <p className="text-[#64748B] text-[11px] leading-relaxed">
-              ML models (<span className="text-[#0F172A] font-semibold">ddos_rf_unsw_nb15_v1</span> and <span className="text-[#0F172A] font-semibold">recon_scan_rf_unsw_nb15_v1</span>) were trained and evaluated on the public <span className="text-[#D97706] font-bold">UNSW-NB15</span> dataset using official predefined train/test boundaries (<span className="text-[#334155]">UNSW_NB15_testing-set.csv</span>). Metrics reflect held-out benchmark performance and do not guarantee identical accuracy on unseen networks.
+            <p className="text-slate-400 text-[11px] leading-relaxed">
+              ML models (<span className="text-slate-100 font-semibold">ddos_rf_unsw_nb15_v1</span> and <span className="text-slate-100 font-semibold">recon_scan_rf_unsw_nb15_v1</span>) were trained and evaluated on the public <span className="text-amber-400 font-bold">UNSW-NB15</span> dataset using official predefined train/test boundaries (<span className="text-slate-200">UNSW_NB15_testing-set.csv</span>). Metrics reflect held-out benchmark performance and do not guarantee identical accuracy on unseen networks.
             </p>
           </div>
-          <div className="p-3.5 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0] space-y-1">
-            <div className="font-bold text-[#16A34A] flex items-center gap-1.5">
+          <div className="p-3.5 rounded-lg bg-slate-950/60 border border-slate-800/80 space-y-1">
+            <div className="font-bold text-emerald-400 flex items-center gap-1.5">
               <ShieldCheck className="w-3.5 h-3.5" />
               Live Demonstration Traffic Streams
             </div>
-            <p className="text-[#64748B] text-[11px] leading-relaxed">
-              Live interactive demonstration scenarios (<span className="text-[#0F172A] font-semibold">scripts/generate_demo_data.py</span>) feed controlled synthetic flow telemetry through the full detection pipeline. Demonstration traffic is explicitly tagged <span className="text-[#0F172A] font-semibold">source="controlled_demo"</span> and is distinct from offline benchmark test datasets.
+            <p className="text-slate-400 text-[11px] leading-relaxed">
+              Live interactive demonstration scenarios (<span className="text-slate-100 font-semibold">scripts/generate_demo_data.py</span>) feed controlled synthetic flow telemetry through the full detection pipeline. Demonstration traffic is explicitly tagged <span className="text-slate-100 font-semibold">source="controlled_demo"</span> and is distinct from offline benchmark test datasets.
             </p>
           </div>
         </div>
       </div>
 
       {/* Detector Registry Table */}
-      <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl overflow-hidden shadow-xs hover:shadow-md transition-all">
-        <div className="p-4 border-b border-[#E2E8F0] flex items-center justify-between font-mono bg-[#F8FAFC]">
-          <h3 className="font-bold text-[#0F172A] text-xs flex items-center gap-2 uppercase">
-            <Cpu className="w-4 h-4 text-[#4F46E5]" />
+      <div className="bg-slate-900/80 backdrop-blur-md border border-slate-800/80 rounded-xl overflow-hidden shadow-xl">
+        <div className="p-4 border-b border-slate-800/80 flex items-center justify-between font-mono bg-slate-950/80">
+          <h3 className="font-bold text-slate-100 text-xs flex items-center gap-2 uppercase">
+            <Cpu className="w-4 h-4 text-indigo-400" />
             REGISTERED DETECTOR MODULES & ML MODELS ({displayList.length})
           </h3>
-          <span className="text-[10px] font-bold text-[#2563EB] bg-[#EFF6FF] border border-[#BFDBFE] px-2.5 py-0.5 rounded">PASSIVE ENCLAVE MODE</span>
+          <span className="text-[10px] font-bold text-cyan-400 bg-cyan-500/10 border border-cyan-500/30 px-2.5 py-0.5 rounded">PASSIVE ENCLAVE MODE</span>
         </div>
 
         {loading ? (
-          <div className="p-12 text-center text-[#64748B] font-mono text-xs space-y-2 bg-[#F8FAFC]">
-            <div className="animate-spin h-6 w-6 border-2 border-[#4F46E5] border-t-transparent rounded-full mx-auto"></div>
+          <div className="p-12 text-center text-slate-400 font-mono text-xs space-y-2 bg-slate-950/60">
+            <div className="animate-spin h-6 w-6 border-2 border-indigo-400 border-t-transparent rounded-full mx-auto"></div>
             <p>Fetching model registry metadata...</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs font-mono text-[#334155]">
-              <thead className="bg-[#F8FAFC] text-[#64748B] uppercase text-[10px] tracking-wider border-b border-[#E2E8F0]">
+            <table className="w-full text-left text-xs font-mono text-slate-300">
+              <thead className="bg-slate-950/80 text-slate-400 uppercase text-[10px] tracking-wider border-b border-slate-800/80">
                 <tr>
                   <th className="py-3.5 px-4">Detector Engine</th>
                   <th className="py-3.5 px-4">Methodology</th>
@@ -172,44 +172,44 @@ export default function ModelPerformance() {
                   <th className="py-3.5 px-4">Held-Out Metrics / Summary</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#E2E8F0]">
+              <tbody className="divide-y divide-slate-800/80">
                 {displayList.map((d) => (
-                  <tr key={d.name} className="hover:bg-[#F8FAFC] transition-colors">
-                    <td className="py-3.5 px-4 font-semibold text-[#0F172A]">
+                  <tr key={d.name} className="hover:bg-slate-800/50 transition-colors">
+                    <td className="py-3.5 px-4 font-semibold text-slate-100">
                       <div className="flex items-center gap-2">
-                        <Cpu className="h-4 w-4 text-[#4F46E5] shrink-0" />
+                        <Cpu className="h-4 w-4 text-indigo-400 shrink-0" />
                         <div>
                           <div>{d.name}</div>
                           {d.model_path && (
-                            <div className="text-[10px] text-[#64748B] font-normal">{d.model_path}</div>
+                            <div className="text-[10px] text-slate-500 font-normal">{d.model_path}</div>
                           )}
                         </div>
                       </div>
                     </td>
-                    <td className="py-3.5 px-4 text-[#334155] text-[11px]">{d.type}</td>
-                    <td className="py-3.5 px-4 text-[#4F46E5] font-bold">{d.version}</td>
-                    <td className="py-3.5 px-4 text-[#D97706] font-semibold">{d.dataset}</td>
+                    <td className="py-3.5 px-4 text-slate-300 text-[11px]">{d.type}</td>
+                    <td className="py-3.5 px-4 text-indigo-400 font-bold">{d.version}</td>
+                    <td className="py-3.5 px-4 text-amber-400 font-semibold">{d.dataset}</td>
                     <td className="py-3.5 px-4">
                       {d.available ? (
-                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#ECFDF5] text-[#16A34A] border border-[#BBF7D0] flex items-center gap-1 w-max">
+                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center gap-1 w-max">
                           <CheckCircle2 className="h-3 w-3" />
                           ACTIVE
                         </span>
                       ) : (
-                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#FEF2F2] text-[#DC2626] border border-[#FECACA] flex items-center gap-1 w-max">
+                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/20 text-rose-400 border border-rose-500/40 flex items-center gap-1 w-max">
                           <AlertCircle className="h-3 w-3" />
                           UNAVAILABLE
                         </span>
                       )}
                     </td>
-                    <td className="py-3.5 px-4 text-[#64748B] text-[11px]">
+                    <td className="py-3.5 px-4 text-slate-400 text-[11px]">
                       {d.accuracy !== undefined && d.accuracy !== null ? (
                         <div className="space-y-0.5">
-                          <div className="text-[#0F172A] font-bold">
-                            Accuracy: <span className="text-[#16A34A]">{(d.accuracy * 100).toFixed(1)}%</span> | Macro F1: <span className="text-[#2563EB]">{d.f1_macro?.toFixed(3)}</span>
+                          <div className="text-slate-100 font-bold">
+                            Accuracy: <span className="text-emerald-400">{(d.accuracy * 100).toFixed(1)}%</span> | Macro F1: <span className="text-cyan-400">{d.f1_macro?.toFixed(3)}</span>
                           </div>
-                          <div className="text-[10px] text-[#64748B]">
-                            Weighted F1: <span className="text-[#334155]">{d.f1_weighted?.toFixed(3)}</span> | FPR: <span className="text-[#D97706]">{d.false_positive_rate !== undefined ? (d.false_positive_rate * 100).toFixed(1) + '%' : 'N/A'}</span>
+                          <div className="text-[10px] text-slate-400">
+                            Weighted F1: <span className="text-slate-300">{d.f1_weighted?.toFixed(3)}</span> | FPR: <span className="text-amber-400">{d.false_positive_rate !== undefined ? (d.false_positive_rate * 100).toFixed(1) + '%' : 'N/A'}</span>
                           </div>
                         </div>
                       ) : (

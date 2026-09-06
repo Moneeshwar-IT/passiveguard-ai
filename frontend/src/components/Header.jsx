@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Eye, Activity, AlertCircle, Clock, RefreshCw } from 'lucide-react';
+import { Eye, Activity, AlertCircle, Clock, RefreshCw, ShieldCheck } from 'lucide-react';
 import { fetchHealth, resetDemoState, formatIndianDateTime } from '../services/api';
 
 export default function Header({ wsStatus = 'connected', onResetSuccess }) {
@@ -11,16 +11,16 @@ export default function Header({ wsStatus = 'connected', onResetSuccess }) {
   const [resetMsg, setResetMsg] = useState(null);
 
   const pageMap = {
-    '/': { title: 'Command Center', breadcrumb: 'PassiveGuard / Command Center' },
+    '/': { title: 'Security Operations Center', breadcrumb: 'PassiveGuard / Command Center' },
     '/demo': { title: 'Demo Lab & Simulation', breadcrumb: 'PassiveGuard / Demo Lab' },
-    '/alerts': { title: 'Live Threat Detection', breadcrumb: 'PassiveGuard / Threat Alerts' },
-    '/alert-details': { title: 'Threat Evidence Inspector', breadcrumb: 'PassiveGuard / Alert Details' },
-    '/traffic': { title: 'Traffic Intelligence', breadcrumb: 'PassiveGuard / Traffic Analytics' },
-    '/models': { title: 'AI Model Registry', breadcrumb: 'PassiveGuard / Model Performance' },
+    '/alerts': { title: 'Live Threat Detection', breadcrumb: 'PassiveGuard / SAST & Threat Alerts' },
+    '/alert-details': { title: 'Threat Evidence Inspector', breadcrumb: 'PassiveGuard / Alert Evidence' },
+    '/traffic': { title: 'Network Traffic Intelligence', breadcrumb: 'PassiveGuard / Network Telemetry' },
+    '/models': { title: 'AI Model & Hub Registry', breadcrumb: 'PassiveGuard / AI Model Registry' },
   };
 
   const currentPage = pageMap[location.pathname] || {
-    title: 'Command Center',
+    title: 'Security Operations Center',
     breadcrumb: 'PassiveGuard / Security Console',
   };
 
@@ -71,43 +71,43 @@ export default function Header({ wsStatus = 'connected', onResetSuccess }) {
   };
 
   return (
-    <header className="bg-[#FFFFFF] border-b border-[#E2E8F0] px-6 py-3.5 flex items-center justify-between shadow-xs sticky top-0 z-30">
+    <header className="bg-slate-900/80 backdrop-blur-md border-b border-slate-800/80 px-6 py-3.5 flex items-center justify-between sticky top-0 z-30">
       {/* Left: Page Title & Breadcrumb */}
       <div className="flex items-center space-x-4">
         <div>
-          <div className="flex items-center space-x-2 text-[11px] font-mono text-[#64748B] uppercase tracking-wider">
+          <div className="flex items-center space-x-2 text-[11px] font-mono text-cyan-400 uppercase tracking-wider">
             <span>{currentPage.breadcrumb}</span>
           </div>
-          <h1 className="text-lg font-bold text-[#0F172A] tracking-tight flex items-center gap-2 font-sans">
+          <h1 className="text-lg font-bold text-slate-100 tracking-tight flex items-center gap-2 font-sans">
             {currentPage.title}
           </h1>
         </div>
       </div>
 
-      {/* Center/Right: Live Status Badges & UTC Clock */}
+      {/* Center/Right: Live Status Badges & Clock */}
       <div className="flex items-center space-x-3">
-        {/* UTC Clock */}
-        <div className="hidden lg:flex items-center space-x-1.5 px-3 py-1 rounded bg-[#F8FAFC] border border-[#E2E8F0] text-xs font-mono text-[#64748B]">
-          <Clock className="h-3.5 w-3.5 text-[#2563EB]" />
+        {/* IST Clock */}
+        <div className="hidden lg:flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-slate-800/60 border border-slate-700/60 text-xs font-mono text-cyan-300">
+          <Clock className="h-3.5 w-3.5 text-cyan-400" />
           <span>{timeString}</span>
         </div>
 
         {/* Read Only Enclave Badge */}
-        <div className="hidden md:flex items-center space-x-1.5 bg-[#EFF6FF] px-3 py-1 rounded border border-[#BFDBFE] text-xs font-mono text-[#2563EB] font-medium">
-          <Eye className="h-3.5 w-3.5 text-[#2563EB]" />
+        <div className="hidden md:flex items-center space-x-1.5 bg-cyan-500/10 px-3 py-1.5 rounded-lg border border-cyan-500/30 text-xs font-mono text-cyan-400 font-semibold">
+          <Eye className="h-3.5 w-3.5 text-cyan-400 animate-pulse" />
           <span>PASSIVE ENCLAVE: READ-ONLY</span>
         </div>
 
         {/* WebSocket Stream Badge */}
-        <div className={`flex items-center space-x-1.5 px-3 py-1 rounded border text-xs font-mono font-semibold ${
+        <div className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg border text-xs font-mono font-semibold ${
           wsStatus === 'connected'
-            ? 'bg-[#ECFDF5] border-[#BBF7D0] text-[#15803D]'
+            ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
             : wsStatus === 'reconnecting'
-            ? 'bg-[#FEF3C7] border-[#FDE68A] text-[#D97706]'
-            : 'bg-[#FEF2F2] border-[#FECACA] text-[#DC2626]'
+            ? 'bg-amber-500/10 border-amber-500/30 text-amber-400'
+            : 'bg-rose-500/10 border-rose-500/30 text-rose-400'
         }`}>
           <span className={`h-2 w-2 rounded-full ${
-            wsStatus === 'connected' ? 'bg-[#16A34A] animate-pulse' : 'bg-[#D97706]'
+            wsStatus === 'connected' ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'
           }`}></span>
           <span>
             {wsStatus === 'connected' ? 'LIVE TELEMETRY' : wsStatus === 'reconnecting' ? 'RECONNECTING' : 'OFFLINE'}
@@ -116,22 +116,22 @@ export default function Header({ wsStatus = 'connected', onResetSuccess }) {
 
         {/* Backend Health Badge */}
         {healthStatus === 'healthy' && (
-          <div className="hidden sm:flex items-center space-x-1.5 bg-[#ECFDF5] px-3 py-1 rounded border border-[#BBF7D0] text-xs font-mono text-[#15803D]">
-            <Activity className="h-3.5 w-3.5 text-[#16A34A]" />
+          <div className="hidden sm:flex items-center space-x-1.5 bg-emerald-500/10 px-3 py-1.5 rounded-lg border border-emerald-500/30 text-xs font-mono text-emerald-400">
+            <Activity className="h-3.5 w-3.5 text-emerald-400" />
             <span>SYSTEM HEALTHY</span>
           </div>
         )}
 
         {healthStatus === 'degraded' && (
-          <div className="flex items-center space-x-1.5 bg-[#FEF3C7] px-3 py-1 rounded border border-[#FDE68A] text-xs font-mono text-[#D97706]">
-            <AlertCircle className="h-3.5 w-3.5 text-[#D97706]" />
+          <div className="flex items-center space-x-1.5 bg-amber-500/10 px-3 py-1.5 rounded-lg border border-amber-500/30 text-xs font-mono text-amber-400">
+            <AlertCircle className="h-3.5 w-3.5 text-amber-400" />
             <span>DEGRADED</span>
           </div>
         )}
 
         {healthStatus === 'offline' && (
-          <div className="flex items-center space-x-1.5 bg-[#FEF2F2] px-3 py-1 rounded border border-[#FECACA] text-xs font-mono text-[#DC2626]">
-            <AlertCircle className="h-3.5 w-3.5 text-[#DC2626]" />
+          <div className="flex items-center space-x-1.5 bg-rose-500/10 px-3 py-1.5 rounded-lg border border-rose-500/30 text-xs font-mono text-rose-400">
+            <AlertCircle className="h-3.5 w-3.5 text-rose-400" />
             <span>OFFLINE</span>
           </div>
         )}
@@ -140,10 +140,10 @@ export default function Header({ wsStatus = 'connected', onResetSuccess }) {
         <button
           onClick={handleGlobalReset}
           disabled={resetting}
-          className="btn-secondary-dark px-3 py-1 text-xs font-mono font-medium flex items-center space-x-1.5 cursor-pointer disabled:opacity-50"
+          className="btn-secondary-dark px-3 py-1.5 text-xs font-mono font-medium flex items-center space-x-1.5 cursor-pointer disabled:opacity-50"
           title="Reset backend alert store and telemetry state"
         >
-          <RefreshCw className={`h-3.5 w-3.5 ${resetting ? 'animate-spin text-[#2563EB]' : 'text-[#64748B]'}`} />
+          <RefreshCw className={`h-3.5 w-3.5 ${resetting ? 'animate-spin text-cyan-400' : 'text-slate-400'}`} />
           <span>{resetting ? 'RESETTING...' : resetMsg ? resetMsg : 'RESET STATE'}</span>
         </button>
       </div>
