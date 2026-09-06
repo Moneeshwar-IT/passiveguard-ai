@@ -5,7 +5,7 @@ import DetectionPipeline from '../components/dashboard/DetectionPipeline';
 import PassiveEnclaveCard from '../components/dashboard/PassiveEnclaveCard';
 import {
   Activity, AlertTriangle, ShieldAlert, Radio, Server,
-  PieChart, BarChart3, ChevronRight, Bell, Zap, CheckCircle2
+  PieChart, BarChart3, ChevronRight, Bell, Zap, CheckCircle2, Cpu
 } from 'lucide-react';
 import {
   fetchAlerts, fetchCurrentTraffic, fetchHistoricalTraffic,
