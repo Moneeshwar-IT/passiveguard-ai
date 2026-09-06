@@ -72,43 +72,43 @@ export default function Header({ wsStatus = 'connected', onResetSuccess }) {
   };
 
   return (
-    <header className="bg-[#FFFFFF] border-b border-[#E2E8F0] px-6 py-3 flex items-center justify-between shadow-xs sticky top-0 z-30 select-none">
+    <header className="bg-[#050816] border-b border-[#1C2A45] px-6 py-3.5 flex items-center justify-between shadow-md sticky top-0 z-30">
       {/* Left: Page Title & Breadcrumb */}
       <div className="flex items-center space-x-4">
         <div>
           <div className="flex items-center space-x-2 text-[11px] font-mono text-[#64748B] uppercase tracking-wider">
             <span>{currentPage.breadcrumb}</span>
           </div>
-          <h1 className="text-base font-bold text-[#0F172A] tracking-tight flex items-center gap-2 font-sans mt-0.5">
+          <h1 className="text-lg font-bold text-[#F8FAFC] tracking-tight flex items-center gap-2 font-sans">
             {currentPage.title}
           </h1>
         </div>
       </div>
 
       {/* Center/Right: Live Status Badges & UTC Clock */}
-      <div className="flex items-center space-x-2.5">
+      <div className="flex items-center space-x-3">
         {/* UTC Clock */}
-        <div className="hidden lg:flex items-center space-x-1.5 px-3 py-1 rounded-md bg-[#F8FAFC] border border-[#E2E8F0] text-xs font-mono text-[#475569]">
-          <Clock className="h-3.5 w-3.5 text-[#2563EB]" />
+        <div className="hidden lg:flex items-center space-x-1.5 px-3 py-1 rounded bg-[#0D1426] border border-[#1C2A45] text-xs font-mono text-[#94A3B8]">
+          <Clock className="h-3.5 w-3.5 text-[#22D3EE]" />
           <span>{timeString}</span>
         </div>
 
         {/* Read Only Enclave Badge */}
-        <div className="hidden md:flex items-center space-x-1.5 bg-[#EFF6FF] px-3 py-1 rounded-md border border-[#BFDBFE] text-xs font-mono text-[#2563EB] font-semibold">
-          <Eye className="h-3.5 w-3.5 text-[#2563EB]" />
+        <div className="hidden md:flex items-center space-x-1.5 bg-[rgba(34,211,238,0.10)] px-3 py-1 rounded border border-[#22D3EE]/30 text-xs font-mono text-[#22D3EE] font-medium">
+          <Eye className="h-3.5 w-3.5 text-[#22D3EE]" />
           <span>PASSIVE ENCLAVE: READ-ONLY</span>
         </div>
 
         {/* WebSocket Stream Badge */}
-        <div className={`flex items-center space-x-1.5 px-3 py-1 rounded-md border text-xs font-mono font-semibold ${
+        <div className={`flex items-center space-x-1.5 px-3 py-1 rounded border text-xs font-mono font-semibold ${
           wsStatus === 'connected'
-            ? 'bg-[#ECFDF5] border-[#BBF7D0] text-[#15803D]'
+            ? 'bg-[rgba(34,197,94,0.12)] border-[#22C55E]/30 text-[#22C55E]'
             : wsStatus === 'reconnecting'
-            ? 'bg-[#FEF3C7] border-[#FDE68A] text-[#D97706]'
-            : 'bg-[#FEF2F2] border-[#FCA5A5] text-[#DC2626]'
+            ? 'bg-[rgba(245,158,11,0.15)] border-[#F59E0B]/30 text-[#F59E0B]'
+            : 'bg-[rgba(239,68,68,0.15)] border-[#EF4444]/30 text-[#EF4444]'
         }`}>
           <span className={`h-2 w-2 rounded-full ${
-            wsStatus === 'connected' ? 'bg-[#16A34A] animate-pulse' : 'bg-[#D97706]'
+            wsStatus === 'connected' ? 'bg-[#22C55E] animate-pulse' : 'bg-[#F59E0B]'
           }`}></span>
           <span>
             {wsStatus === 'connected' ? 'LIVE TELEMETRY' : wsStatus === 'reconnecting' ? 'RECONNECTING' : 'OFFLINE'}
@@ -117,22 +117,22 @@ export default function Header({ wsStatus = 'connected', onResetSuccess }) {
 
         {/* Backend Health Badge */}
         {healthStatus === 'healthy' && (
-          <div className="hidden sm:flex items-center space-x-1.5 bg-[#ECFDF5] px-3 py-1 rounded-md border border-[#BBF7D0] text-xs font-mono text-[#15803D] font-medium">
-            <Activity className="h-3.5 w-3.5 text-[#15803D]" />
+          <div className="hidden sm:flex items-center space-x-1.5 bg-[rgba(34,197,94,0.12)] px-3 py-1 rounded border border-[#22C55E]/30 text-xs font-mono text-[#22C55E]">
+            <Activity className="h-3.5 w-3.5 text-[#22C55E]" />
             <span>SYSTEM HEALTHY</span>
           </div>
         )}
 
         {healthStatus === 'degraded' && (
-          <div className="flex items-center space-x-1.5 bg-[#FEF3C7] px-3 py-1 rounded-md border border-[#FDE68A] text-xs font-mono text-[#D97706] font-medium">
-            <AlertCircle className="h-3.5 w-3.5 text-[#D97706]" />
+          <div className="flex items-center space-x-1.5 bg-[rgba(245,158,11,0.15)] px-3 py-1 rounded border border-[#F59E0B]/30 text-xs font-mono text-[#F59E0B]">
+            <AlertCircle className="h-3.5 w-3.5 text-[#F59E0B]" />
             <span>DEGRADED</span>
           </div>
         )}
 
         {healthStatus === 'offline' && (
-          <div className="flex items-center space-x-1.5 bg-[#FEF2F2] px-3 py-1 rounded-md border border-[#FCA5A5] text-xs font-mono text-[#DC2626] font-medium">
-            <AlertCircle className="h-3.5 w-3.5 text-[#DC2626]" />
+          <div className="flex items-center space-x-1.5 bg-[rgba(239,68,68,0.15)] px-3 py-1 rounded border border-[#EF4444]/30 text-xs font-mono text-[#EF4444]">
+            <AlertCircle className="h-3.5 w-3.5 text-[#EF4444]" />
             <span>OFFLINE</span>
           </div>
         )}
@@ -141,10 +141,10 @@ export default function Header({ wsStatus = 'connected', onResetSuccess }) {
         <button
           onClick={handleGlobalReset}
           disabled={resetting}
-          className="bg-[#FFFFFF] hover:bg-[#F8FAFC] text-[#334155] hover:text-[#0F172A] border border-[#CBD5E1] hover:border-[#94A3B8] px-3 py-1 rounded-md text-xs font-mono font-semibold flex items-center space-x-1.5 cursor-pointer disabled:opacity-50 transition-all shadow-xs"
+          className="btn-secondary-dark px-3 py-1 text-xs font-mono font-medium flex items-center space-x-1.5 cursor-pointer disabled:opacity-50"
           title="Reset backend alert store and telemetry state"
         >
-          <RefreshCw className={`h-3.5 w-3.5 ${resetting ? 'animate-spin text-[#2563EB]' : 'text-[#64748B]'}`} />
+          <RefreshCw className={`h-3.5 w-3.5 ${resetting ? 'animate-spin text-[#22D3EE]' : 'text-[#64748B]'}`} />
           <span>{resetting ? 'RESETTING...' : resetMsg ? resetMsg : 'RESET STATE'}</span>
         </button>
       </div>

@@ -28,16 +28,16 @@ export default function Sidebar({ wsStatus = 'connected' }) {
   ];
 
   return (
-    <aside className="w-64 bg-[#FFFFFF] border-r border-[#E2E8F0] flex flex-col justify-between min-h-[calc(100vh-57px)] shrink-0 select-none shadow-xs">
+    <aside className="w-64 bg-[#070B18] border-r border-[#1C2A45] flex flex-col justify-between min-h-[calc(100vh-57px)] shrink-0 select-none shadow-lg">
       {/* Brand Header */}
-      <div className="p-4 border-b border-[#E2E8F0]">
+      <div className="p-4 border-b border-[#1C2A45]">
         <div className="flex items-center space-x-3">
-          <div className="p-2.5 rounded-lg bg-[#EFF6FF] border border-[#BFDBFE] text-[#2563EB] shadow-xs">
-            <Shield className="h-5 w-5 text-[#2563EB]" />
+          <div className="p-2.5 rounded-lg bg-[#0D1426] border border-[#1C2A45] text-[#22D3EE]">
+            <Shield className="h-5 w-5 text-[#22D3EE]" />
           </div>
           <div>
-            <div className="font-bold text-[#0F172A] tracking-wider text-sm font-mono flex items-center gap-1">
-              PASSIVEGUARD<span className="text-[#2563EB] font-extrabold">AI</span>
+            <div className="font-bold text-[#F8FAFC] tracking-wider text-sm font-mono flex items-center gap-1">
+              PASSIVEGUARD<span className="text-[#22D3EE] font-extrabold drop-shadow-[0_0_8px_rgba(34,211,238,0.4)]">AI</span>
             </div>
             <div className="text-[10px] font-mono text-[#64748B] tracking-wider uppercase font-medium">
               PASSIVE THREAT INTELLIGENCE
@@ -60,15 +60,15 @@ export default function Sidebar({ wsStatus = 'connected' }) {
               className={({ isActive }) =>
                 `flex items-center space-x-3 px-3.5 py-2.5 rounded-md text-xs transition-all ${
                   isActive
-                    ? 'bg-[#EFF6FF] text-[#2563EB] border-l-2 border-[#2563EB] font-semibold'
-                    : 'text-[#475569] hover:bg-[#F8FAFC] hover:text-[#0F172A] font-medium'
+                    ? 'bg-[rgba(34,211,238,0.10)] text-[#E2E8F0] border-l-2 border-[#22D3EE] font-semibold'
+                    : 'text-[#94A3B8] hover:bg-[#0D1426] hover:text-[#F8FAFC] font-medium'
                 }`
               }
             >
               {({ isActive }) => (
                 <>
-                  <span className={`font-mono text-xs w-4 ${isActive ? 'text-[#2563EB]' : 'text-[#94A3B8]'}`}>{item.symbol}</span>
-                  <Icon className="h-4 w-4 shrink-0 text-current" />
+                  <span className={`font-mono text-xs w-4 ${isActive ? 'text-[#22D3EE]' : 'text-[#64748B]'}`}>{item.symbol}</span>
+                  <Icon className={`h-4 w-4 shrink-0 ${isActive ? 'text-[#22D3EE]' : 'text-current'}`} />
                   <span>{item.name}</span>
                 </>
               )}
@@ -78,48 +78,48 @@ export default function Sidebar({ wsStatus = 'connected' }) {
       </nav>
 
       {/* System Status Footer */}
-      <div className="p-3.5 border-t border-[#E2E8F0] bg-[#F8FAFC] space-y-2.5">
+      <div className="p-3.5 border-t border-[#1C2A45] bg-[#080D1C] space-y-2.5">
         <div className="text-[10px] font-mono font-bold text-[#64748B] uppercase tracking-wider flex items-center justify-between">
           <span>SYSTEM STATUS</span>
-          <Lock className="h-3 w-3 text-[#2563EB]" />
+          <Lock className="h-3 w-3 text-[#22D3EE]" />
         </div>
 
         {/* Status Rows */}
         <div className="space-y-1.5 text-xs font-mono">
-          <div className="p-2 rounded-md bg-[#FFFFFF] border border-[#E2E8F0] flex items-center justify-between shadow-xs">
-            <span className="text-[#475569] text-[11px] font-medium">PASSIVE ENCLAVE</span>
-            <span className="text-[10px] font-bold text-[#2563EB] flex items-center gap-1">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#2563EB]"></span>
+          <div className="p-2 rounded-md bg-[#0D1426] border border-[#1C2A45] flex items-center justify-between">
+            <span className="text-[#94A3B8] text-[11px] font-medium">PASSIVE ENCLAVE</span>
+            <span className="text-[10px] font-bold text-[#22D3EE] flex items-center gap-1">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#22D3EE]"></span>
               READ-ONLY
             </span>
           </div>
 
-          <div className="p-2 rounded-md bg-[#FFFFFF] border border-[#E2E8F0] flex items-center justify-between shadow-xs">
-            <span className="text-[#475569] text-[11px] font-medium">API ENDPOINT</span>
+          <div className="p-2 rounded-md bg-[#0D1426] border border-[#1C2A45] flex items-center justify-between">
+            <span className="text-[#94A3B8] text-[11px] font-medium">API ENDPOINT</span>
             <span className={`text-[10px] font-bold flex items-center gap-1 ${
-              apiStatus === 'connected' ? 'text-[#16A34A]' : 'text-[#D97706]'
+              apiStatus === 'connected' ? 'text-[#22C55E]' : 'text-[#F59E0B]'
             }`}>
               <span className={`h-1.5 w-1.5 rounded-full ${
-                apiStatus === 'connected' ? 'bg-[#16A34A]' : 'bg-[#D97706]'
+                apiStatus === 'connected' ? 'bg-[#22C55E]' : 'bg-[#F59E0B]'
               }`}></span>
               {apiStatus.toUpperCase()}
             </span>
           </div>
 
-          <div className="p-2 rounded-md bg-[#FFFFFF] border border-[#E2E8F0] flex items-center justify-between shadow-xs">
-            <span className="text-[#475569] text-[11px] font-medium">WEBSOCKET STREAM</span>
+          <div className="p-2 rounded-md bg-[#0D1426] border border-[#1C2A45] flex items-center justify-between">
+            <span className="text-[#94A3B8] text-[11px] font-medium">WEBSOCKET STREAM</span>
             <span className={`text-[10px] font-bold flex items-center gap-1 ${
-              wsStatus === 'connected' ? 'text-[#16A34A]' : 'text-[#D97706]'
+              wsStatus === 'connected' ? 'text-[#22C55E]' : 'text-[#F59E0B]'
             }`}>
               <span className={`h-1.5 w-1.5 rounded-full ${
-                wsStatus === 'connected' ? 'bg-[#16A34A]' : 'bg-[#D97706]'
+                wsStatus === 'connected' ? 'bg-[#22C55E]' : 'bg-[#F59E0B]'
               }`}></span>
               {wsStatus.toUpperCase()}
             </span>
           </div>
         </div>
 
-        <div className="text-[10px] font-mono text-[#64748B] text-center pt-2 border-t border-[#E2E8F0]">
+        <div className="text-[10px] font-mono text-[#64748B] text-center pt-2 border-t border-[#1C2A45]">
           Detect. Explain. Never Talk Back.
         </div>
       </div>

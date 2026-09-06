@@ -5,8 +5,8 @@
 @layer base {
   body {
     margin: 0;
-    background-color: #F4F7FB;
-    color: #0F172A;
+    background-color: #050816;
+    color: #F8FAFC;
     min-height: 100vh;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -14,119 +14,137 @@
   }
 }
 
-/* Custom Clean Light Scrollbar */
+/* Subtle Midnight Background Depth */
+.bg-midnight-glow {
+  background-image: radial-gradient(circle at 50% 0%, rgba(34, 211, 238, 0.05) 0%, rgba(5, 8, 22, 0) 70%),
+                    radial-gradient(circle at 80% 20%, rgba(99, 102, 241, 0.03) 0%, rgba(5, 8, 22, 0) 60%);
+}
+
+/* Custom Minimal Dark Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #F1F5F9;
+  background: #050816;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #CBD5E1;
+  background: #1C2A45;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94A3B8;
+  background: #22D3EE;
 }
 
-/* Clean Button Utility Classes */
-.btn-primary-blue {
-  background-color: #2563EB;
-  color: #FFFFFF;
-  font-weight: 600;
+/* Midnight Cyber Button Utility Classes */
+.btn-primary-gradient {
+  background: linear-gradient(135deg, #22D3EE, #6366F1);
+  color: #050816;
+  font-weight: 700;
   border-radius: 8px;
-  transition: all 0.15s ease-in-out;
+  transition: all 0.2s ease-in-out;
 }
 
-.btn-primary-blue:hover {
-  background-color: #1D4ED8;
-  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+.btn-primary-gradient:hover {
+  box-shadow: 0 0 15px rgba(34, 211, 238, 0.4);
+  transform: translateY(-1px);
 }
 
-.btn-secondary-white {
-  background-color: #FFFFFF;
-  color: #334155;
-  border: 1px solid #CBD5E1;
+.btn-ai-gradient {
+  background: linear-gradient(135deg, #6366F1, #A855F7);
+  color: #FFFFFF;
+  font-weight: 700;
+  border-radius: 8px;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-ai-gradient:hover {
+  box-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
+}
+
+.btn-secondary-dark {
+  background-color: #0D1426;
+  color: #CBD5E1;
+  border: 1px solid #1C2A45;
   font-weight: 500;
   border-radius: 8px;
   transition: all 0.15s ease-in-out;
 }
 
-.btn-secondary-white:hover {
-  background-color: #F1F5F9;
-  border-color: #94A3B8;
+.btn-secondary-dark:hover {
+  background-color: #111B32;
+  border-color: rgba(34, 211, 238, 0.4);
+  color: #F8FAFC;
 }
 
 .btn-danger-red {
-  background-color: #DC2626;
+  background: linear-gradient(135deg, #EF4444, #DC2626);
   color: #FFFFFF;
-  font-weight: 600;
+  font-weight: 700;
   border-radius: 8px;
   transition: all 0.15s ease-in-out;
 }
 
 .btn-danger-red:hover {
-  background-color: #B91C1C;
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.3);
 }
 
-/* Enterprise Card Elevation & Border Defaults */
-.enterprise-card {
-  background-color: #FFFFFF;
-  border: 1px solid #E2E8F0;
+/* Midnight Cyber Card Defaults */
+.midnight-card {
+  background-color: #0D1426;
+  border: 1px solid #1C2A45;
   border-radius: 12px;
-  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.05), 0 1px 2px -1px rgba(15, 23, 42, 0.05);
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 4px 20px rgba(5, 8, 22, 0.4);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
 }
 
-.enterprise-card:hover {
-  border-color: #CBD5E1;
-  box-shadow: 0 4px 12px 0 rgba(15, 23, 42, 0.07);
+.midnight-card:hover {
+  background-color: #111B32;
+  border-color: #2B4268;
 }
 
 /* Semantic Badges */
-.badge-blue {
-  background-color: #EFF6FF;
-  color: #2563EB;
-  border: 1px solid #BFDBFE;
+.badge-cyan {
+  background-color: rgba(34, 211, 238, 0.10);
+  color: #22D3EE;
+  border: 1px solid rgba(34, 211, 238, 0.30);
 }
 
 .badge-indigo {
-  background-color: #EEF2FF;
-  color: #4F46E5;
-  border: 1px solid #C7D2FE;
+  background-color: rgba(99, 102, 241, 0.12);
+  color: #6366F1;
+  border: 1px solid rgba(99, 102, 241, 0.30);
 }
 
 .badge-purple {
-  background-color: #F5F3FF;
-  color: #7C3AED;
-  border: 1px solid #DDD6FE;
+  background-color: rgba(168, 85, 247, 0.12);
+  color: #A855F7;
+  border: 1px solid rgba(168, 85, 247, 0.30);
 }
 
 .badge-green {
-  background-color: #ECFDF5;
-  color: #15803D;
-  border: 1px solid #BBF7D0;
+  background-color: rgba(34, 197, 94, 0.12);
+  color: #22C55E;
+  border: 1px solid rgba(34, 197, 94, 0.30);
 }
 
 .badge-amber {
-  background-color: #FFFBEB;
-  color: #D97706;
-  border: 1px solid #FDE68A;
+  background-color: rgba(245, 158, 11, 0.15);
+  color: #F59E0B;
+  border: 1px solid rgba(245, 158, 11, 0.30);
 }
 
 .badge-red {
-  background-color: #FEF2F2;
-  color: #DC2626;
-  border: 1px solid #FECACA;
+  background-color: rgba(239, 68, 68, 0.15);
+  color: #EF4444;
+  border: 1px solid rgba(239, 68, 68, 0.30);
 }
 
 .badge-critical {
-  background-color: #FEF2F2;
-  color: #B91C1C;
-  border: 1px solid #FCA5A5;
+  background-color: rgba(220, 38, 38, 0.15);
+  color: #DC2626;
+  border: 1px solid rgba(220, 38, 38, 0.30);
 }
-

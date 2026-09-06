@@ -1,56 +1,61 @@
 import React from 'react';
 
-export default function SummaryCard({ title, value, subtitle, icon: Icon, color = 'blue', trend }) {
+export default function SummaryCard({ title, value, subtitle, icon: Icon, color = 'cyan', trend }) {
   const colorMap = {
+    cyan: {
+      badge: 'text-[#22D3EE] bg-[rgba(34,211,238,0.10)] border-[#22D3EE]/30',
+      text: 'text-[#22D3EE]',
+      borderTop: 'border-t-2 border-t-[#22D3EE]',
+    },
     blue: {
-      badge: 'text-[#2563EB] bg-[#EFF6FF] border-[#BFDBFE]',
-      text: 'text-[#2563EB]',
-      borderTop: 'border-t-4 border-t-[#2563EB]',
+      badge: 'text-[#22D3EE] bg-[rgba(34,211,238,0.10)] border-[#22D3EE]/30',
+      text: 'text-[#22D3EE]',
+      borderTop: 'border-t-2 border-t-[#22D3EE]',
     },
     indigo: {
-      badge: 'text-[#4F46E5] bg-[#EEF2FF] border-[#C7D2FE]',
-      text: 'text-[#4F46E5]',
-      borderTop: 'border-t-4 border-t-[#4F46E5]',
+      badge: 'text-[#6366F1] bg-[rgba(99,102,241,0.12)] border-[#6366F1]/30',
+      text: 'text-[#6366F1]',
+      borderTop: 'border-t-2 border-t-[#6366F1]',
     },
     purple: {
-      badge: 'text-[#7C3AED] bg-[#F5F3FF] border-[#DDD6FE]',
-      text: 'text-[#7C3AED]',
-      borderTop: 'border-t-4 border-t-[#7C3AED]',
+      badge: 'text-[#A855F7] bg-[rgba(168,85,247,0.12)] border-[#A855F7]/30',
+      text: 'text-[#A855F7]',
+      borderTop: 'border-t-2 border-t-[#A855F7]',
     },
     red: {
-      badge: 'text-[#DC2626] bg-[#FEF2F2] border-[#FECACA]',
-      text: 'text-[#DC2626]',
-      borderTop: 'border-t-4 border-t-[#DC2626]',
+      badge: 'text-[#EF4444] bg-[rgba(239,68,68,0.15)] border-[#EF4444]/30',
+      text: 'text-[#EF4444]',
+      borderTop: 'border-t-2 border-t-[#EF4444]',
     },
     amber: {
-      badge: 'text-[#D97706] bg-[#FFFBEB] border-[#FDE68A]',
-      text: 'text-[#D97706]',
-      borderTop: 'border-t-4 border-t-[#D97706]',
+      badge: 'text-[#F59E0B] bg-[rgba(245,158,11,0.15)] border-[#F59E0B]/30',
+      text: 'text-[#F59E0B]',
+      borderTop: 'border-t-2 border-t-[#F59E0B]',
     },
     green: {
-      badge: 'text-[#16A34A] bg-[#ECFDF5] border-[#BBF7D0]',
-      text: 'text-[#16A34A]',
-      borderTop: 'border-t-4 border-t-[#16A34A]',
+      badge: 'text-[#22C55E] bg-[rgba(34,197,94,0.12)] border-[#22C55E]/30',
+      text: 'text-[#22C55E]',
+      borderTop: 'border-t-2 border-t-[#22C55E]',
     },
   };
 
-  const styleObj = colorMap[color] || colorMap.blue;
+  const styleObj = colorMap[color] || colorMap.cyan;
 
   return (
-    <div className={`bg-[#FFFFFF] border border-[#E2E8F0] ${styleObj.borderTop} rounded-xl p-4 transition-all shadow-xs hover:shadow-sm group flex flex-col justify-between`}>
+    <div className={`bg-[#0D1426] border border-[#1C2A45] ${styleObj.borderTop} rounded-xl p-4 transition-all shadow-md hover:bg-[#111B32] hover:border-[#2B4268] group flex flex-col justify-between`}>
       <div>
         <div className="flex items-center justify-between mb-2">
-          <span className="text-[11px] font-mono font-semibold text-[#64748B] uppercase tracking-wider">{title}</span>
+          <span className="text-[11px] font-mono font-semibold text-[#94A3B8] uppercase tracking-wider">{title}</span>
           {Icon && (
-            <div className={`p-2 rounded-lg border ${styleObj.badge} group-hover:scale-105 transition-transform shadow-xs`}>
+            <div className={`p-2 rounded-lg border ${styleObj.badge} group-hover:scale-105 transition-transform`}>
               <Icon className="h-4 w-4" />
             </div>
           )}
         </div>
-        <div className="text-2xl font-bold font-mono text-[#0F172A] tracking-tight">{value}</div>
+        <div className="text-2xl font-bold font-mono text-[#F8FAFC] tracking-tight">{value}</div>
       </div>
       {subtitle && (
-        <div className="text-[11px] font-mono text-[#64748B] mt-2 pt-2 border-t border-[#F1F5F9] flex items-center justify-between">
+        <div className="text-[11px] font-mono text-[#64748B] mt-2 pt-2 border-t border-[#1C2A45] flex items-center justify-between">
           <span>{subtitle}</span>
           {trend && <span className={`font-mono font-bold ${styleObj.text}`}>{trend}</span>}
         </div>
