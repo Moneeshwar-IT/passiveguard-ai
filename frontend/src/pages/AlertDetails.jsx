@@ -267,7 +267,7 @@ export default function AlertDetails() {
                   <div key={detName} className="bg-[#F8FAFC] p-3.5 rounded-lg border border-[#E2E8F0] space-y-2 font-mono">
                     <div className="flex justify-between text-xs">
                       <span className="font-semibold text-[#334155]">{detName}</span>
-                      <span className="font-bold text-[#D97706]">{score.toFixed(2)}</span>
+                      <span className="font-bold text-[#D97706]">{(typeof score === 'number' ? score : parseFloat(score || 0)).toFixed(2)}</span>
                     </div>
                     <div className="w-full bg-[#E2E8F0] h-2 rounded-full overflow-hidden">
                       <div className="bg-[#2563EB] h-2 rounded-full" style={{ width: `${Math.min(score * 100, 100)}%` }}></div>
