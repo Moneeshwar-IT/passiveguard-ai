@@ -11,22 +11,22 @@ export default function PassiveEnclaveCard() {
   ];
 
   return (
-    <div className="bg-[#0D1426] border border-[#22D3EE]/40 rounded-xl p-5 shadow-[0_0_15px_rgba(34,211,238,0.06)] relative overflow-hidden bg-midnight-glow">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#1C2A45] pb-4 mb-4">
+    <div className="bg-[#FFFFFF] border border-[#BFDBFE] rounded-xl p-5 shadow-xs relative overflow-hidden bg-enterprise-glow">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#E2E8F0] pb-4 mb-4">
         <div>
           <div className="flex items-center space-x-2">
-            <ShieldCheck className="h-5 w-5 text-[#22D3EE]" />
-            <h3 className="text-sm font-bold font-mono text-[#F8FAFC] tracking-tight uppercase flex items-center gap-2">
+            <ShieldCheck className="h-5 w-5 text-[#2563EB]" />
+            <h3 className="text-sm font-bold font-mono text-[#0F172A] tracking-tight uppercase flex items-center gap-2">
               PASSIVE ENCLAVE — READ-ONLY
             </h3>
           </div>
-          <p className="text-xs font-mono text-[#22D3EE] mt-1 font-medium">
+          <p className="text-xs font-mono text-[#2563EB] mt-1 font-medium">
             "AI-powered passive threat intelligence for unidirectional critical networks."
           </p>
         </div>
 
-        <div className="flex items-center space-x-2 px-3 py-1.5 rounded bg-[#050816] border border-[#22D3EE]/30 text-xs font-mono text-[#22D3EE] font-semibold">
-          <Eye className="h-3.5 w-3.5 text-[#22D3EE] animate-pulse" />
+        <div className="flex items-center space-x-2 px-3 py-1.5 rounded bg-[#EFF6FF] border border-[#BFDBFE] text-xs font-mono text-[#2563EB] font-semibold">
+          <Eye className="h-3.5 w-3.5 text-[#2563EB] animate-pulse" />
           <span>STATUS: ● ACTIVE</span>
         </div>
       </div>
@@ -35,15 +35,15 @@ export default function PassiveEnclaveCard() {
         {constraints.map((c) => (
           <div
             key={c.title}
-            className="p-3 rounded-lg bg-[#050816] border border-[#1C2A45] hover:border-[#22D3EE]/40 transition-colors flex flex-col justify-between"
+            className="p-3 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0] hover:border-[#BFDBFE] transition-colors flex flex-col justify-between shadow-xs"
           >
             <div className="flex items-center space-x-2 mb-1.5">
-              <CheckCircle2 className="h-4 w-4 text-[#22C55E] shrink-0" />
-              <span className="text-[11px] font-mono font-bold text-[#F8FAFC] leading-tight">
+              <CheckCircle2 className="h-4 w-4 text-[#16A34A] shrink-0" />
+              <span className="text-[11px] font-mono font-bold text-[#0F172A] leading-tight">
                 {c.title}
               </span>
             </div>
-            <p className="text-[10px] font-mono text-[#94A3B8] leading-snug">{c.desc}</p>
+            <p className="text-[10px] font-mono text-[#64748B] leading-snug">{c.desc}</p>
           </div>
         ))}
       </div>
