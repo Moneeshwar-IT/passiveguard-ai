@@ -5,13 +5,13 @@ import DetectionPipeline from '../components/dashboard/DetectionPipeline';
 import PassiveEnclaveCard from '../components/dashboard/PassiveEnclaveCard';
 import {
   Activity, AlertTriangle, ShieldAlert, Radio, Server,
-  PieChart, BarChart3, ChevronRight, Bell, Zap, CheckCircle2, Cpu
+  PieChart as PieChartIcon, BarChart3, ChevronRight, Bell, Zap, CheckCircle2, Cpu
 } from 'lucide-react';
 import {
   fetchAlerts, fetchCurrentTraffic, fetchHistoricalTraffic,
   createWebSocketConnection, formatThroughput, formatIndianTime
 } from '../services/api';
-import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { AreaChart, Area, BarChart, Bar, PieChart, Pie, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -293,28 +293,49 @@ export default function Dashboard() {
 
       {/* Threat Distribution & Severity Breakdown Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Threat Distribution Chart (2 cols) */}
+        {/* Threat Distribution Circular Chart (2 cols) */}
         <div className="lg:col-span-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-5 shadow-xs">
           <h3 className="text-sm font-bold text-[#0F172A] mb-4 flex items-center gap-2 border-b border-[#E2E8F0] pb-3 font-sans">
-            <BarChart3 className="h-4 w-4 text-[#7C3AED]" />
+            <PieChartIcon className="h-4 w-4 text-[#7C3AED]" />
             THREAT VECTOR DISTRIBUTION
           </h3>
           <div className="h-56 w-full">
             {alerts.length > 0 ? (
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={threatChartData} layout="vertical" margin={{ left: 20 }}>
-                  <XAxis type="number" stroke="#64748B" tick={{ fontSize: 10, fontFamily: 'JetBrains Mono' }} />
-                  <YAxis dataKey="name" type="category" stroke="#334155" tick={{ fontSize: 11, fontFamily: 'JetBrains Mono' }} width={120} />
-                  <Tooltip contentStyle={{ backgroundColor: '#FFFFFF', borderColor: '#E2E8F0', color: '#0F172A', borderRadius: '8px', fontFamily: 'JetBrains Mono', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.08)' }} />
-                  <Bar dataKey="count" radius={[0, 4, 4, 0]}>
-                    {threatChartData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.fill} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
+              <div className="h-full flex flex-col md:flex-row items-center justify-between gap-4">
+                <div className="h-full w-full md:w-1/2">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={threatChartData.filter(t => t.count > 0)}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={50}
+                        outerRadius={80}
+                        paddingAngle={3}
+                        dataKey="count"
+                      >
+                        {threatChartData.filter(t => t.count > 0).map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.fill} stroke="#FFFFFF" strokeWidth={2} />
+                        ))}
+                      </Pie>
+                      <Tooltip contentStyle={{ backgroundColor: '#FFFFFF', borderColor: '#E2E8F0', color: '#0F172A', borderRadius: '8px', fontFamily: 'JetBrains Mono', fontSize: '11px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.08)' }} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className="w-full md:w-1/2 grid grid-cols-1 sm:grid-cols-2 gap-2 font-mono text-xs max-h-48 overflow-y-auto pr-1">
+                  {threatChartData.filter(t => t.count > 0).map((item) => (
+                    <div key={item.name} className="flex items-center space-x-2.5 p-2 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0]">
+                      <span className="h-3 w-3 rounded-full shrink-0" style={{ backgroundColor: item.fill }}></span>
+                      <div className="truncate">
+                        <div className="font-bold text-[#0F172A] text-[11px] truncate">{item.name}</div>
+                        <div className="text-[10px] text-[#64748B]">{item.count} alerts ({((item.count / alerts.length) * 100).toFixed(0)}%)</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             ) : (
-              <div className="h-full flex items-center justify-center text-[#64748B] text-xs font-mono">
+              <div className="h-full flex items-center justify-center text-[#64748B] text-xs font-mono border border-dashed border-[#E2E8F0] rounded-lg bg-[#F8FAFC]">
                 No active threat alerts detected in current monitoring window.
               </div>
             )}
