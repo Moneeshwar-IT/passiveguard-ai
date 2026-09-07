@@ -3,33 +3,31 @@ import { Eye, ShieldCheck, CheckCircle2, Lock } from 'lucide-react';
 
 export default function PassiveEnclaveCard() {
   const constraints = [
-    { title: 'READ-ONLY INGESTION', desc: 'Out-of-band TAP / Span mirror observation' },
-    { title: 'NETWORK TRANSMISSION DISABLED', desc: '0 outbound response packets or TCP ACKs emitted' },
-    { title: 'ACTIVE PROBING DISABLED', desc: 'Zero port sweeps, DNS probes, or SYN scans' },
+    { title: 'READ-ONLY INGESTION', desc: 'Out-of-band TAP/Span mirror observation' },
+    { title: 'NO OUTBOUND TRAFFIC', desc: '0 response packets or TCP ACKs emitted' },
+    { title: 'NO ACTIVE PROBING', desc: 'Zero port sweeps, DNS probes, or SYN scans' },
     { title: 'METADATA-ONLY ANALYSIS', desc: 'Flow lengths, entropy & jitter features' },
     { title: 'TLS PAYLOAD DECRYPTION DISABLED', desc: 'Strict privacy & TLS integrity preserved' },
   ];
 
   return (
-    <div className="bg-slate-900/80 backdrop-blur-md border border-slate-800/80 rounded-xl p-5 shadow-xl relative overflow-hidden bg-obsidian-glow">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800/80 pb-4 mb-4">
-        <div className="flex items-center space-x-3">
-          <div className="p-2 rounded-lg bg-cyan-500/10 border border-cyan-500/30 text-cyan-400">
-            <ShieldCheck className="h-5 w-5 text-cyan-400" />
-          </div>
-          <div>
-            <h3 className="text-xs font-bold font-mono text-slate-100 tracking-wider uppercase flex items-center gap-2">
-              PASSIVE ENCLAVE OPERATIONAL — READ-ONLY
+    <div className="bg-[#FFFFFF] border border-[#BFDBFE] rounded-xl p-5 shadow-xs relative overflow-hidden bg-enterprise-glow">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#E2E8F0] pb-4 mb-4">
+        <div>
+          <div className="flex items-center space-x-2">
+            <ShieldCheck className="h-5 w-5 text-[#2563EB]" />
+            <h3 className="text-sm font-bold font-mono text-[#0F172A] tracking-tight uppercase flex items-center gap-2">
+              PASSIVE ENCLAVE — READ-ONLY
             </h3>
-            <p className="text-xs font-mono text-cyan-400 mt-0.5 font-medium">
-              Unidirectional observation enclave & zero-transmission security guarantees
-            </p>
           </div>
+          <p className="text-xs font-mono text-[#2563EB] mt-1 font-medium">
+            "AI-powered passive threat intelligence for unidirectional critical networks."
+          </p>
         </div>
 
-        <div className="flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-cyan-500/10 border border-cyan-500/30 text-xs font-mono text-cyan-400 font-semibold shrink-0">
-          <Eye className="h-3.5 w-3.5 text-cyan-400 animate-pulse" />
-          <span>ENCLAVE: ● ACTIVE</span>
+        <div className="flex items-center space-x-2 px-3 py-1.5 rounded bg-[#EFF6FF] border border-[#BFDBFE] text-xs font-mono text-[#2563EB] font-semibold">
+          <Eye className="h-3.5 w-3.5 text-[#2563EB] animate-pulse" />
+          <span>STATUS: ● ACTIVE</span>
         </div>
       </div>
 
@@ -37,15 +35,15 @@ export default function PassiveEnclaveCard() {
         {constraints.map((c) => (
           <div
             key={c.title}
-            className="p-3 rounded-lg bg-slate-950/60 border border-slate-800/80 hover:border-cyan-500/40 transition-colors flex flex-col justify-between"
+            className="p-3 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0] hover:border-[#BFDBFE] transition-colors flex flex-col justify-between shadow-xs"
           >
             <div className="flex items-center space-x-2 mb-1.5">
-              <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
-              <span className="text-[10px] font-mono font-bold text-slate-100 leading-tight">
+              <CheckCircle2 className="h-4 w-4 text-[#16A34A] shrink-0" />
+              <span className="text-[11px] font-mono font-bold text-[#0F172A] leading-tight">
                 {c.title}
               </span>
             </div>
-            <p className="text-[10px] font-mono text-slate-400 leading-snug">{c.desc}</p>
+            <p className="text-[10px] font-mono text-[#64748B] leading-snug">{c.desc}</p>
           </div>
         ))}
       </div>
