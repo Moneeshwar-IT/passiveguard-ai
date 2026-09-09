@@ -30,6 +30,8 @@ data/models/*
 !data/models/.gitkeep
 !data/models/README.md
 !backend/models/ddos_model_v1.joblib
+!data/models/ddos_rf_unsw_nb15_v1.joblib
+!data/models/recon_scan_rf_unsw_nb15_v1.joblib
 
 data/manifests/*
 !data/manifests/.gitkeep
