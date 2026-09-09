@@ -13,6 +13,7 @@ import numpy as np
 import joblib
 from pydantic import BaseModel, Field
 
+from app.config import resolve_model_path
 from app.features.models import FeatureVector
 
 logger = logging.getLogger(__name__)
@@ -54,13 +55,14 @@ class MLInferenceEngine:
         """
         Loads joblib model artifact into memory.
         """
-        if not os.path.exists(model_path):
-            logger.warning(f"ML model artifact not found at '{model_path}'. ML inference disabled.")
+        resolved_path = resolve_model_path(model_path)
+        if not resolved_path or not os.path.exists(resolved_path):
+            logger.warning(f"ML model artifact not found at resolved path '{resolved_path}' (requested: '{model_path}'). ML inference disabled.")
             self._is_loaded = False
             return False
 
         try:
-            artifact = joblib.load(model_path)
+            artifact = joblib.load(resolved_path)
             if isinstance(artifact, dict):
                 self._model = artifact.get("model")
                 self._scaler = artifact.get("scaler")
@@ -78,14 +80,15 @@ class MLInferenceEngine:
                     "flow_duration", "flow_packet_count", "flow_byte_count"
                 ]
 
-            self.model_path = model_path
+            self.model_path = resolved_path
             self._is_loaded = True
-            logger.info(f"Loaded ML model artifact: {self._model_name} ({self._model_version}) from {model_path}")
+            logger.info(f"Loaded ML model artifact: {self._model_name} ({self._model_version}) from resolved absolute path '{resolved_path}'")
             return True
         except Exception as e:
-            logger.error(f"Failed to load ML model artifact from '{model_path}': {e}")
+            logger.error(f"Failed to load ML model artifact from '{resolved_path}': {e}")
             self._is_loaded = False
             return False
+
 
     def is_available(self) -> bool:
         """Returns True if a valid ML model is loaded in memory."""

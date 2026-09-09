@@ -13,6 +13,7 @@ from typing import List, Dict, Any, Optional
 from fastapi import APIRouter
 from pydantic import BaseModel, Field
 
+from app.config import resolve_model_path
 from app.pipeline.engine import pipeline_engine
 
 logger = logging.getLogger(__name__)
@@ -41,19 +42,13 @@ class ModelStatusResponse(BaseModel):
 
 def load_manifest(manifest_rel_path: str) -> Dict[str, Any]:
     """Helper function to load model evaluation manifest JSON safely."""
-    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
-    candidates = [
-        manifest_rel_path,
-        os.path.join(project_root, manifest_rel_path),
-        os.path.join("backend", manifest_rel_path)
-    ]
-    for p in candidates:
-        if os.path.exists(p):
-            try:
-                with open(p, "r", encoding="utf-8") as f:
-                    return json.load(f)
-            except Exception as e:
-                logger.warning(f"Error loading manifest '{p}': {e}")
+    resolved = resolve_model_path(manifest_rel_path)
+    if resolved and os.path.exists(resolved):
+        try:
+            with open(resolved, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception as e:
+            logger.warning(f"Error loading manifest '{resolved}': {e}")
     return {}
 
 
@@ -71,9 +66,11 @@ def get_model_registry_status():
         ddos_ml_avail = ddos_det.ml_engine.is_available()
         ddos_version = ddos_det.model_version
     if not ddos_ml_avail:
-        ddos_ml_avail = os.path.exists(os.path.join("data", "models", "ddos_rf_unsw_nb15_v1.joblib")) or os.path.exists(os.path.join("data", "models", "ddos_rf_v1.joblib"))
+        resolved_ddos = resolve_model_path("data/models/ddos_rf_unsw_nb15_v1.joblib")
+        if resolved_ddos and os.path.exists(resolved_ddos):
+            ddos_ml_avail = True
 
-    ddos_manifest = load_manifest(os.path.join("data", "manifests", "ddos_rf_unsw_nb15_v1.json"))
+    ddos_manifest = load_manifest("data/manifests/ddos_rf_unsw_nb15_v1.json")
     ddos_metrics = ddos_manifest.get("evaluation_metrics", {})
     ddos_dataset = ddos_manifest.get("dataset_name", "UNSW-NB15")
 
@@ -85,11 +82,14 @@ def get_model_registry_status():
         recon_ml_avail = recon_det.ml_engine.is_available()
         recon_version = recon_det.model_version
     if not recon_ml_avail:
-        recon_ml_avail = os.path.exists(os.path.join("data", "models", "recon_scan_rf_unsw_nb15_v1.joblib")) or os.path.exists(os.path.join("data", "models", "recon_rf_v1.joblib"))
+        resolved_recon = resolve_model_path("data/models/recon_scan_rf_unsw_nb15_v1.joblib")
+        if resolved_recon and os.path.exists(resolved_recon):
+            recon_ml_avail = True
 
-    recon_manifest = load_manifest(os.path.join("data", "manifests", "recon_scan_rf_unsw_nb15_v1.json"))
+    recon_manifest = load_manifest("data/manifests/recon_scan_rf_unsw_nb15_v1.json")
     recon_metrics = recon_manifest.get("evaluation_metrics", {})
     recon_dataset = recon_manifest.get("dataset_name", "UNSW-NB15")
+
 
     models = [
         ModelStatusResponse(

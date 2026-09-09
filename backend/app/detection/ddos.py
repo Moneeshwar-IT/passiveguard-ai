@@ -11,6 +11,7 @@ import logging
 from typing import Any, Dict, List, Optional, Tuple
 from pydantic import BaseModel, Field
 
+from app.config import resolve_model_path
 from app.detection.base import BaseDetector, DetectionResult
 from app.risk.scoring import map_score_to_severity, normalize_score
 from app.features.models import FeatureVector
@@ -83,27 +84,28 @@ class DDoSDetector(BaseDetector):
             candidate_paths = [self.config.model_path]
         else:
             candidate_paths = [
-                os.path.join("data", "models", "ddos_rf_v1.joblib"),
+                "data/models/ddos_rf_unsw_nb15_v1.joblib",
+                "data/models/ddos_rf_v1.joblib",
                 os.path.join(self.model_dir, "ddos_model_v1.joblib"),
-                os.path.join("backend", "models", "ddos_model_v1.joblib"),
-                os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data", "models", "ddos_rf_v1.joblib")),
-                os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "models", "ddos_model_v1.joblib"))
+                os.path.join("backend", "models", "ddos_model_v1.joblib")
             ]
 
         found_path = None
         for p in candidate_paths:
-            if os.path.exists(p):
-                found_path = p
+            resolved = resolve_model_path(p)
+            if resolved and os.path.exists(resolved):
+                found_path = resolved
                 break
 
         if found_path:
             success = self.ml_engine.load_model(found_path)
             if success:
-                logger.info(f"Loaded DDoS ML model artifact from: {found_path}")
+                logger.info(f"Loaded DDoS ML model artifact from resolved path: '{found_path}' | Loaded: {self.ml_engine.is_available()}")
             else:
-                logger.warning(f"Failed to load DDoS ML model from: {found_path}. Layer A active.")
+                logger.warning(f"Failed to load DDoS ML model from resolved path: '{found_path}'. Layer A active.")
         else:
-            logger.info("No ML model binary artifact found at standard paths. Layer A statistical detection active.")
+            logger.info("No DDoS ML model binary artifact found at candidate paths. Layer A statistical detection active.")
+
 
     def _extract_feature_dict(self, features: Any) -> Dict[str, Any]:
         """Extracts standard feature dictionary from FeatureVector or dict input."""

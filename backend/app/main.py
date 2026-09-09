@@ -66,6 +66,21 @@ async def lifespan(app: FastAPI):
     """
     logger.info(f"Starting {settings.APP_NAME} in [{settings.ENVIRONMENT}] mode.")
     logger.info("STRICT PASSIVE CONSTRAINT ENFORCED: Observation-only enclave mode active.")
+
+    # Startup ML model verification and logging
+    from app.pipeline.engine import pipeline_engine
+    ddos_det = getattr(pipeline_engine, "ddos_detector", None)
+    recon_det = getattr(pipeline_engine, "recon_detector", None)
+
+    ddos_path = ddos_det.ml_engine.model_path if ddos_det and hasattr(ddos_det, "ml_engine") else "None"
+    ddos_loaded = ddos_det.ml_engine.is_available() if ddos_det and hasattr(ddos_det, "ml_engine") else False
+
+    recon_path = recon_det.ml_engine.model_path if recon_det and hasattr(recon_det, "ml_engine") else "None"
+    recon_loaded = recon_det.ml_engine.is_available() if recon_det and hasattr(recon_det, "ml_engine") else False
+
+    logger.info(f"[ML MODEL STARTUP] DDoSDetector Model Path: '{ddos_path}' | Loaded: {ddos_loaded}")
+    logger.info(f"[ML MODEL STARTUP] ReconDetector Model Path: '{recon_path}' | Loaded: {recon_loaded}")
+
     poller = asyncio.create_task(poll_alerts_and_broadcast())
     yield
     poller.cancel()
@@ -74,6 +89,7 @@ async def lifespan(app: FastAPI):
     except asyncio.CancelledError:
         pass
     logger.info(f"Shutting down {settings.APP_NAME}.")
+
 
 
 app = FastAPI(

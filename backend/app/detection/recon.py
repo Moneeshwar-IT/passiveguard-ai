@@ -14,6 +14,7 @@ import logging
 from typing import Any, Dict, List, Optional, Set, Tuple
 from pydantic import BaseModel, Field
 
+from app.config import resolve_model_path
 from app.detection.base import BaseDetector, DetectionResult
 from app.risk.scoring import map_score_to_severity
 from app.features.models import FeatureVector
@@ -171,27 +172,28 @@ class ReconDetector(BaseDetector):
             candidate_paths = [self.config.model_path]
         else:
             candidate_paths = [
-                os.path.join("data", "models", "recon_scan_rf_unsw_nb15_v1.joblib"),
-                os.path.join("data", "models", "recon_rf_unsw_nb15_v1.joblib"),
-                os.path.join("data", "models", "recon_rf_v1.joblib"),
-                os.path.join(self.model_dir, "recon_model_v1.joblib"),
-                os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data", "models", "recon_rf_v1.joblib"))
+                "data/models/recon_scan_rf_unsw_nb15_v1.joblib",
+                "data/models/recon_rf_unsw_nb15_v1.joblib",
+                "data/models/recon_rf_v1.joblib",
+                os.path.join(self.model_dir, "recon_model_v1.joblib")
             ]
 
         found_path = None
         for p in candidate_paths:
-            if os.path.exists(p):
-                found_path = p
+            resolved = resolve_model_path(p)
+            if resolved and os.path.exists(resolved):
+                found_path = resolved
                 break
 
         if found_path:
             success = self.ml_engine.load_model(found_path)
             if success:
-                logger.info(f"Loaded Recon ML model artifact from: {found_path}")
+                logger.info(f"Loaded Recon ML model artifact from resolved path: '{found_path}' | Loaded: {self.ml_engine.is_available()}")
             else:
-                logger.warning(f"Failed to load Recon ML model from: {found_path}. Layer A active.")
+                logger.warning(f"Failed to load Recon ML model from resolved path: '{found_path}'. Layer A active.")
         else:
-            logger.info("No Recon ML model binary artifact found at standard paths. Layer A statistical detection active.")
+            logger.info("No Recon ML model binary artifact found at candidate paths. Layer A statistical detection active.")
+
 
     def _extract_feature_dict(self, features: Any) -> Dict[str, Any]:
         """Extracts standard feature dictionary from FeatureVector, FlowFeatures, or dict."""

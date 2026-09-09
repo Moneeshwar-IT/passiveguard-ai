@@ -17,6 +17,7 @@ from datetime import datetime, timezone, timedelta
 from typing import Dict, Any, List, Optional, Set
 from pydantic import BaseModel, Field
 
+from app.config import resolve_model_path
 from app.ingestion.flow_stream import FlowRecord
 from app.features.flow_features import extract_flow_features
 from app.features.models import FeatureVector
@@ -193,12 +194,9 @@ class PipelineEngine:
     def __init__(self, alert_threshold: float = 0.65):
         self.alert_threshold = alert_threshold
 
-        # Detectors
-        ddos_model_path = os.path.join(
-              "data",
-              "models",
-              "ddos_rf_unsw_nb15_v1.joblib"
-        )
+        # Canonical detector model paths resolved relative to repository root
+        ddos_model_path = resolve_model_path("data/models/ddos_rf_unsw_nb15_v1.joblib")
+        recon_model_path = resolve_model_path("data/models/recon_scan_rf_unsw_nb15_v1.joblib")
 
         self.ddos_detector = DDoSDetector(
             model_path=ddos_model_path
@@ -207,8 +205,11 @@ class PipelineEngine:
         self.dga_detector = DGADetector()
         self.dns_tunnel_detector = DNSTunnelDetector()
         self.tls_detector = TLSDetector()
-        self.recon_detector = ReconDetector()
+        self.recon_detector = ReconDetector(
+            model_path=recon_model_path
+        )
         self.exfil_detector = ExfiltrationDetector()
+
 
         # Risk Fusion Engine & Traffic Analytics Tracker
         self.fusion_engine = RiskFusionEngine()

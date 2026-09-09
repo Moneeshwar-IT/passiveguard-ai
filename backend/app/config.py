@@ -76,3 +76,65 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+
+def get_project_root() -> str:
+    """
+    Returns the absolute path to the repository root directory.
+    Assumes this file is located at <PROJECT_ROOT>/backend/app/config.py.
+    """
+    config_file = os.path.abspath(__file__)
+    app_dir = os.path.dirname(config_file)
+    backend_dir = os.path.dirname(app_dir)
+    project_root = os.path.dirname(backend_dir)
+    return project_root
+
+
+def resolve_model_path(path: Optional[str]) -> Optional[str]:
+    """
+    Resolves a relative or absolute model/manifest path to an existing absolute path.
+    Ensures paths like 'data/models/ddos_rf_unsw_nb15_v1.joblib' resolve cleanly
+    from the repository root regardless of whether CWD is the repository root or backend/.
+    """
+    if not path:
+        return None
+
+    clean_path = os.path.normpath(path)
+
+    # 1. If already absolute and exists, return directly
+    if os.path.isabs(clean_path) and os.path.exists(clean_path):
+        return clean_path
+
+    project_root = get_project_root()
+
+    # Candidate 1: relative to repository root (canonical path)
+    candidate1 = os.path.abspath(os.path.join(project_root, clean_path))
+    if os.path.exists(candidate1):
+        return candidate1
+
+    # Candidate 2: relative to current working directory
+    candidate2 = os.path.abspath(clean_path)
+    if os.path.exists(candidate2):
+        return candidate2
+
+    # Candidate 3: if path starts with 'backend/' or 'backend\', strip it
+    if clean_path.startswith("backend" + os.sep) or clean_path.startswith("backend/"):
+        rel_sub = clean_path[8:]
+        candidate3 = os.path.abspath(os.path.join(project_root, rel_sub))
+        if os.path.exists(candidate3):
+            return candidate3
+
+    # Candidate 4: search by filename under project_root/data/models/
+    filename = os.path.basename(clean_path)
+    candidate4 = os.path.abspath(os.path.join(project_root, "data", "models", filename))
+    if os.path.exists(candidate4):
+        return candidate4
+
+    # Candidate 5: search by filename under project_root/data/manifests/
+    candidate5 = os.path.abspath(os.path.join(project_root, "data", "manifests", filename))
+    if os.path.exists(candidate5):
+        return candidate5
+
+    # Fallback to candidate1 (canonical path under project root)
+    return candidate1
+
