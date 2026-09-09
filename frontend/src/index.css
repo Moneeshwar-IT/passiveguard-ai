@@ -11,16 +11,27 @@
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  .dark body {
+    background-color: #090D16;
+    color: #F8FAFC;
   }
 }
 
-/* Subtle Light Enterprise Radial Glow */
+/* Subtle Light & Dark Glow Utilities */
 .bg-enterprise-glow {
-  background-image: radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.03) 0%, rgba(244, 247, 251, 0) 70%),
-                    radial-gradient(circle at 80% 20%, rgba(79, 70, 229, 0.02) 0%, rgba(244, 247, 251, 0) 60%);
+  background-image: radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.04) 0%, rgba(244, 247, 251, 0) 70%),
+                    radial-gradient(circle at 80% 20%, rgba(124, 58, 237, 0.03) 0%, rgba(244, 247, 251, 0) 60%);
 }
 
-/* Custom Clean Scrollbar */
+.dark .bg-enterprise-glow {
+  background-image: radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.08) 0%, rgba(9, 13, 22, 0) 70%),
+                    radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.05) 0%, rgba(9, 13, 22, 0) 60%);
+}
+
+/* Custom Scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -30,8 +41,17 @@
   background: #F4F7FB;
 }
 
+.dark ::-webkit-scrollbar-track {
+  background: #090D16;
+}
+
 ::-webkit-scrollbar-thumb {
   background: #CBD5E1;
+  border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
   border-radius: 4px;
 }
 
@@ -39,7 +59,11 @@
   background: #94A3B8;
 }
 
-/* Light Enterprise Button Utility Classes */
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #3B82F6;
+}
+
+/* Reusable Button Classes */
 .btn-primary-gradient {
   background-color: #2563EB;
   color: #FFFFFF;
@@ -54,17 +78,13 @@
   transform: translateY(-1px);
 }
 
-.btn-ai-gradient {
-  background-color: #4F46E5;
-  color: #FFFFFF;
-  font-weight: 600;
-  border-radius: 8px;
-  transition: all 0.15s ease-in-out;
+.dark .btn-primary-gradient {
+  background-color: #3B82F6;
 }
 
-.btn-ai-gradient:hover {
-  background-color: #4338CA;
-  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.25);
+.dark .btn-primary-gradient:hover {
+  background-color: #2563EB;
+  box-shadow: 0 2px 12px rgba(59, 130, 246, 0.4);
 }
 
 .btn-secondary-dark {
@@ -82,20 +102,19 @@
   color: #0F172A;
 }
 
-.btn-danger-red {
-  background-color: #DC2626;
+.dark .btn-secondary-dark {
+  background-color: #1E293B;
+  color: #CBD5E1;
+  border-color: #334155;
+}
+
+.dark .btn-secondary-dark:hover {
+  background-color: #334155;
+  border-color: #3B82F6;
   color: #FFFFFF;
-  font-weight: 600;
-  border-radius: 8px;
-  transition: all 0.15s ease-in-out;
 }
 
-.btn-danger-red:hover {
-  background-color: #B91C1C;
-  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.25);
-}
-
-/* Light Enterprise Card Defaults */
+/* Card Class Defaults */
 .midnight-card {
   background-color: #FFFFFF;
   border: 1px solid #E2E8F0;
@@ -104,51 +123,18 @@
   transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
 }
 
+.dark .midnight-card {
+  background-color: #0F172A;
+  border-color: #334155;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
+}
+
 .midnight-card:hover {
-  background-color: #FFFFFF;
   border-color: #CBD5E1;
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
 }
 
-/* Semantic Light Badges */
-.badge-cyan {
-  background-color: #EFF6FF;
-  color: #2563EB;
-  border: 1px solid #BFDBFE;
-}
-
-.badge-indigo {
-  background-color: #EEF2FF;
-  color: #4F46E5;
-  border: 1px solid #C7D2FE;
-}
-
-.badge-purple {
-  background-color: #F5F3FF;
-  color: #7C3AED;
-  border: 1px solid #DDD6FE;
-}
-
-.badge-green {
-  background-color: #ECFDF5;
-  color: #15803D;
-  border: 1px solid #BBF7D0;
-}
-
-.badge-amber {
-  background-color: #FEF3C7;
-  color: #D97706;
-  border: 1px solid #FDE68A;
-}
-
-.badge-red {
-  background-color: #FEF2F2;
-  color: #DC2626;
-  border: 1px solid #FECACA;
-}
-
-.badge-critical {
-  background-color: #FEF2F2;
-  color: #B91C1C;
-  border: 1px solid #FCA5A5;
+.dark .midnight-card:hover {
+  border-color: #3B82F6;
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
 }

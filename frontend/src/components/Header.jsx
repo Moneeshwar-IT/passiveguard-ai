@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Eye, Activity, AlertCircle, Clock, RefreshCw } from 'lucide-react';
+import { Eye, Activity, AlertCircle, Clock, RefreshCw, Sun, Moon, Menu, X } from 'lucide-react';
 import { resetDemoState, formatIndianDateTime } from '../services/api';
 import { useBackendStatus } from '../context/BackendStatusContext';
+import { useTheme } from '../context/ThemeContext';
+import Badge from './common/Badge';
 
-export default function Header({ onResetSuccess }) {
+export default function Header({ onResetSuccess, mobileMenuOpen, setMobileMenuOpen }) {
   const location = useLocation();
   const { healthStatus, wsStatus } = useBackendStatus();
+  const { theme, toggleTheme } = useTheme();
   const [timeString, setTimeString] = useState('');
   const [resetting, setResetting] = useState(false);
   const [resetMsg, setResetMsg] = useState(null);
@@ -51,83 +54,91 @@ export default function Header({ onResetSuccess }) {
   };
 
   return (
-    <header className="bg-soc-surface border-b border-soc-border px-6 py-3.5 flex items-center justify-between shadow-card sticky top-0 z-30">
-      {/* Left: Page Title & Breadcrumb */}
-      <div className="flex items-center space-x-4">
+    <header className="bg-enterprise-surface dark:bg-enterprise-surfaceDark border-b border-enterprise-border dark:border-enterprise-borderDark px-4 sm:px-6 py-3 flex items-center justify-between shadow-card sticky top-0 z-30 transition-colors">
+      {/* Left: Mobile Menu Toggle & Title */}
+      <div className="flex items-center space-x-3">
+        <button
+          onClick={() => setMobileMenuOpen && setMobileMenuOpen(!mobileMenuOpen)}
+          className="lg:hidden p-1.5 rounded-lg border border-enterprise-border dark:border-enterprise-borderDark text-enterprise-textSecondary dark:text-enterprise-textSecondaryDark hover:text-enterprise-textPrimary dark:hover:text-enterprise-textPrimaryDark hover:bg-enterprise-surfaceSubtle dark:hover:bg-enterprise-surfaceSubtleDark transition-colors"
+          aria-label="Toggle navigation menu"
+        >
+          {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        </button>
+
         <div>
-          <div className="flex items-center space-x-2 text-[11px] font-mono text-soc-textMuted uppercase tracking-wider">
+          <div className="flex items-center space-x-2 text-[11px] font-mono text-enterprise-textMuted dark:text-enterprise-textMutedDark uppercase tracking-wider">
             <span>{currentPage.breadcrumb}</span>
           </div>
-          <h1 className="text-lg font-bold text-soc-textPrimary tracking-tight flex items-center gap-2 font-sans">
+          <h1 className="text-base sm:text-lg font-bold text-enterprise-textPrimary dark:text-enterprise-textPrimaryDark tracking-tight flex items-center gap-2 font-sans">
             {currentPage.title}
           </h1>
         </div>
       </div>
 
-      {/* Center/Right: Live Status Badges & Clock */}
-      <div className="flex items-center space-x-3">
+      {/* Right: Status Badges, IST Clock, Theme Toggle & Reset */}
+      <div className="flex items-center space-x-2 sm:space-x-3">
         {/* IST Clock */}
-        <div className="hidden lg:flex items-center space-x-1.5 px-3 py-1 rounded bg-soc-surfaceSubtle border border-soc-border text-xs font-mono text-soc-textMuted">
-          <Clock className="h-3.5 w-3.5 text-brand" />
+        <div className="hidden xl:flex items-center space-x-1.5 px-2.5 py-1 rounded bg-enterprise-surfaceSubtle dark:bg-enterprise-surfaceSubtleDark border border-enterprise-border dark:border-enterprise-borderDark text-xs font-mono text-enterprise-textMuted dark:text-enterprise-textMutedDark">
+          <Clock className="h-3.5 w-3.5 text-enterprise-primary dark:text-enterprise-primaryDark" />
           <span>{timeString}</span>
         </div>
 
         {/* Read Only Enclave Badge */}
-        <div className="hidden md:flex items-center space-x-1.5 bg-brand-50 px-3 py-1 rounded border border-brand-200 text-xs font-mono text-brand font-medium">
-          <Eye className="h-3.5 w-3.5 text-brand" />
-          <span>PASSIVE ENCLAVE: READ-ONLY</span>
+        <div className="hidden md:block">
+          <Badge type="READ_ONLY" />
         </div>
 
-        {/* WebSocket Stream Badge with Accessible Label */}
-        <div
-          className={`flex items-center space-x-1.5 px-3 py-1 rounded border text-xs font-mono font-semibold ${
-            wsStatus === 'connected'
-              ? 'bg-success-50 border-success-200 text-success-700'
-              : wsStatus === 'reconnecting'
-              ? 'bg-warning-50 border-warning-100 text-warning'
-              : 'bg-danger-50 border-danger-100 text-danger'
-          }`}
-          title={`WebSocket Status: ${wsStatus}`}
-        >
-          <span className={`h-2 w-2 rounded-full ${
-            wsStatus === 'connected' ? 'bg-success animate-pulse' : 'bg-warning'
-          }`} aria-hidden="true"></span>
-          <span>
-            {wsStatus === 'connected' ? 'LIVE TELEMETRY: CONNECTED' : wsStatus === 'reconnecting' ? 'RECONNECTING' : 'OFFLINE'}
-          </span>
-        </div>
+        {/* WebSocket Stream Badge */}
+        {wsStatus === 'connected' ? (
+          <Badge type="STREAMING" label="LIVE TELEMETRY: CONNECTED" pulse />
+        ) : wsStatus === 'reconnecting' ? (
+          <Badge type="WARNING" label="RECONNECTING" />
+        ) : (
+          <Badge type="OFFLINE" label="OFFLINE" />
+        )}
 
         {/* Backend Health Badge */}
         {healthStatus === 'healthy' && (
-          <div className="hidden sm:flex items-center space-x-1.5 bg-success-50 px-3 py-1 rounded border border-success-200 text-xs font-mono text-success-700">
-            <Activity className="h-3.5 w-3.5 text-success" />
-            <span>SYSTEM: HEALTHY</span>
+          <div className="hidden sm:block">
+            <Badge type="HEALTHY" />
           </div>
         )}
-
         {healthStatus === 'degraded' && (
-          <div className="flex items-center space-x-1.5 bg-warning-50 px-3 py-1 rounded border border-warning-100 text-xs font-mono text-warning">
-            <AlertCircle className="h-3.5 w-3.5 text-warning" />
-            <span>SYSTEM: DEGRADED</span>
-          </div>
+          <Badge type="MEDIUM" label="SYSTEM: DEGRADED" />
+        )}
+        {healthStatus === 'offline' && (
+          <Badge type="CRITICAL" label="SYSTEM: OFFLINE" />
         )}
 
-        {healthStatus === 'offline' && (
-          <div className="flex items-center space-x-1.5 bg-danger-50 px-3 py-1 rounded border border-danger-100 text-xs font-mono text-danger">
-            <AlertCircle className="h-3.5 w-3.5 text-danger" />
-            <span>SYSTEM: OFFLINE</span>
-          </div>
-        )}
+        {/* Dark/Light Theme Toggle */}
+        <button
+          onClick={toggleTheme}
+          className="p-1.5 sm:px-2.5 sm:py-1 rounded-lg border border-enterprise-border dark:border-enterprise-borderDark bg-enterprise-surfaceSubtle dark:bg-enterprise-surfaceSubtleDark text-enterprise-textSecondary dark:text-enterprise-textSecondaryDark hover:text-enterprise-textPrimary dark:hover:text-enterprise-textPrimaryDark hover:border-enterprise-primary/50 transition-colors flex items-center gap-1.5 text-xs font-mono cursor-pointer"
+          title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} mode`}
+          aria-label="Toggle Theme"
+        >
+          {theme === 'dark' ? (
+            <>
+              <Sun className="h-4 w-4 text-amber-400" />
+              <span className="hidden sm:inline">Light</span>
+            </>
+          ) : (
+            <>
+              <Moon className="h-4 w-4 text-slate-700" />
+              <span className="hidden sm:inline">Dark</span>
+            </>
+          )}
+        </button>
 
         {/* Global Quick Reset Button */}
         <button
           onClick={handleGlobalReset}
           disabled={resetting}
-          className="btn-secondary-dark px-3 py-1 text-xs font-mono font-medium flex items-center space-x-1.5 cursor-pointer disabled:opacity-50"
+          className="btn-secondary-dark px-2.5 py-1 text-xs font-mono font-medium flex items-center space-x-1.5 cursor-pointer disabled:opacity-50"
           title="Reset backend alert store and telemetry state"
         >
-          <RefreshCw className={`h-3.5 w-3.5 ${resetting ? 'animate-spin text-brand' : 'text-soc-textMuted'}`} />
-          <span>{resetting ? 'RESETTING...' : resetMsg ? resetMsg : 'RESET STATE'}</span>
+          <RefreshCw className={`h-3.5 w-3.5 ${resetting ? 'animate-spin text-enterprise-primary' : 'text-enterprise-textMuted dark:text-enterprise-textMutedDark'}`} />
+          <span className="hidden sm:inline">{resetting ? 'RESETTING...' : resetMsg ? resetMsg : 'RESET STATE'}</span>
         </button>
       </div>
     </header>

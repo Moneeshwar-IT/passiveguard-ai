@@ -10,6 +10,8 @@ import {
   API_BASE_URL, formatIndianTime
 } from '../services/api';
 import { useWebSocket } from '../context/WebSocketContext';
+import Badge from '../components/common/Badge';
+import EmptyState from '../components/common/EmptyState';
 
 const formatApiError = (err, fallbackText) => {
   if (err.response) {
@@ -112,47 +114,29 @@ export default function DemoSimulation() {
 
   const getScenarioAccent = (scenarioId) => {
     switch (scenarioId) {
-      case 'ddos': return { border: 'hover:border-danger', icon: <ShieldAlert className="w-5 h-5 text-danger" />, tag: 'text-danger' };
-      case 'c2': return { border: 'hover:border-ai', icon: <Radio className="w-5 h-5 text-ai" />, tag: 'text-ai' };
-      case 'dga': return { border: 'hover:border-indigoAcc', icon: <Terminal className="w-5 h-5 text-indigoAcc" />, tag: 'text-indigoAcc' };
-      case 'dns_tunnel': return { border: 'hover:border-brand', icon: <FileCode className="w-5 h-5 text-brand" />, tag: 'text-brand' };
-      case 'tls_malware': return { border: 'hover:border-warning', icon: <Lock className="w-5 h-5 text-warning" />, tag: 'text-warning' };
-      case 'recon': return { border: 'hover:border-brand', icon: <Search className="w-5 h-5 text-brand" />, tag: 'text-brand' };
-      case 'exfiltration': return { border: 'hover:border-ai', icon: <Activity className="w-5 h-5 text-ai" />, tag: 'text-ai' };
-      default: return { border: 'hover:border-brand', icon: <Cpu className="w-5 h-5 text-brand" />, tag: 'text-brand' };
-    }
-  };
-
-  const getSeverityBadge = (severity) => {
-    switch (severity?.toUpperCase()) {
-      case 'CRITICAL':
-        return <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-danger-50 text-danger border border-danger-100">CRITICAL</span>;
-      case 'HIGH':
-        return <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-danger-50 text-danger border border-danger-100">HIGH</span>;
-      case 'MEDIUM':
-        return <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-warning-50 text-warning border border-warning-100">MEDIUM</span>;
-      case 'LOW':
-        return <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-brand-50 text-brand border border-brand-200">LOW</span>;
-      default:
-        return <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-soc-surfaceSubtle text-soc-textMuted border border-soc-border">INFO / BENIGN</span>;
+      case 'ddos': return { border: 'hover:border-rose-500', icon: <ShieldAlert className="w-5 h-5 text-rose-500" />, tag: 'text-rose-500' };
+      case 'c2': return { border: 'hover:border-purple-500', icon: <Radio className="w-5 h-5 text-purple-500" />, tag: 'text-purple-500' };
+      case 'dga': return { border: 'hover:border-indigo-500', icon: <Terminal className="w-5 h-5 text-indigo-500" />, tag: 'text-indigo-500' };
+      case 'dns_tunnel': return { border: 'hover:border-blue-500', icon: <FileCode className="w-5 h-5 text-blue-500" />, tag: 'text-blue-500' };
+      case 'tls_malware': return { border: 'hover:border-amber-500', icon: <Lock className="w-5 h-5 text-amber-500" />, tag: 'text-amber-500' };
+      case 'recon': return { border: 'hover:border-blue-500', icon: <Search className="w-5 h-5 text-blue-500" />, tag: 'text-blue-500' };
+      case 'exfiltration': return { border: 'hover:border-purple-500', icon: <Activity className="w-5 h-5 text-purple-500" />, tag: 'text-purple-500' };
+      default: return { border: 'hover:border-blue-500', icon: <Cpu className="w-5 h-5 text-blue-500" />, tag: 'text-blue-500' };
     }
   };
 
   return (
-    <div className="space-y-6 pb-12 font-sans">
+    <div className="space-y-6 pb-12 font-sans transition-colors">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-soc-surface p-6 rounded-xl border border-soc-border shadow-card hover:shadow-cardHover transition-all">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-enterprise-surface dark:bg-enterprise-surfaceDark p-6 rounded-xl border border-enterprise-border dark:border-enterprise-borderDark shadow-card transition-colors">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-xl font-bold font-mono text-soc-textPrimary tracking-tight uppercase flex items-center gap-2">
-              <span className="text-ai">DEMO</span> <span className="text-brand">LAB & SIMULATION</span>
+            <h1 className="text-xl font-bold font-mono text-enterprise-textPrimary dark:text-enterprise-textPrimaryDark tracking-tight uppercase flex items-center gap-2">
+              <span className="text-purple-500">DEMO</span> <span className="text-enterprise-primary dark:text-enterprise-primaryDark">LAB & SIMULATION</span>
             </h1>
-            <span className="px-2.5 py-0.5 rounded text-[10px] font-mono font-bold bg-brand-50 text-brand border border-brand-200 flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-brand animate-pulse"></span>
-              CONTROLLED SIMULATION ENVIRONMENT
-            </span>
+            <Badge type="ACTIVE" label="CONTROLLED SIMULATION ENVIRONMENT" pulse />
           </div>
-          <p className="text-soc-textSecondary text-xs mt-1 font-medium">
+          <p className="text-enterprise-textSecondary dark:text-enterprise-textSecondaryDark text-xs mt-1 font-medium">
             Controlled passive threat simulation suite for Smart India Hackathon live judging demonstration.
           </p>
         </div>
@@ -171,16 +155,16 @@ export default function DemoSimulation() {
           <button
             onClick={() => handleRunDemo()}
             disabled={isRunning}
-            className="px-4 py-2.5 rounded-lg text-xs font-mono font-bold bg-soc-surface hover:bg-soc-surfaceSubtle text-brand border border-soc-borderHover hover:border-brand transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-subtle"
+            className="px-4 py-2.5 rounded-lg text-xs font-mono font-bold bg-enterprise-surface dark:bg-enterprise-surfaceDark hover:bg-enterprise-surfaceSubtle dark:hover:bg-enterprise-surfaceSubtleDark text-enterprise-primary dark:text-enterprise-primaryDark border border-enterprise-border dark:border-enterprise-borderDark hover:border-enterprise-primary transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-subtle"
           >
             {isRunning ? (
               <>
-                <RefreshCw className="w-4 h-4 animate-spin text-brand" />
+                <RefreshCw className="w-4 h-4 animate-spin text-enterprise-primary dark:text-enterprise-primaryDark" />
                 EXECUTING PIPELINE...
               </>
             ) : (
               <>
-                <Play className="w-4 h-4 text-brand" />
+                <Play className="w-4 h-4 text-enterprise-primary dark:text-enterprise-primaryDark" />
                 RUN SELECTED ({selectedScenario.toUpperCase()})
               </>
             )}
@@ -189,39 +173,39 @@ export default function DemoSimulation() {
           <button
             onClick={handleResetState}
             disabled={resetting || isRunning}
-            className="px-3 py-2.5 rounded-lg text-xs font-mono font-bold bg-soc-surface hover:bg-soc-surfaceSubtle text-soc-textSecondary hover:text-soc-textPrimary border border-soc-borderHover transition-all flex items-center gap-2 disabled:opacity-50 cursor-pointer shadow-subtle"
+            className="px-3 py-2.5 rounded-lg text-xs font-mono font-bold bg-enterprise-surface dark:bg-enterprise-surfaceDark hover:bg-enterprise-surfaceSubtle dark:hover:bg-enterprise-surfaceSubtleDark text-enterprise-textSecondary dark:text-enterprise-textSecondaryDark hover:text-enterprise-textPrimary dark:hover:text-enterprise-textPrimaryDark border border-enterprise-border dark:border-enterprise-borderDark transition-all flex items-center gap-2 disabled:opacity-50 cursor-pointer shadow-subtle"
             title="Clear alert store and detector state"
           >
-            <RotateCcw className={`w-3.5 h-3.5 ${resetting ? 'animate-spin text-brand' : ''}`} />
+            <RotateCcw className={`w-3.5 h-3.5 ${resetting ? 'animate-spin text-enterprise-primary dark:text-enterprise-primaryDark' : ''}`} />
             RESET STATE
           </button>
         </div>
       </div>
 
       {/* Prominent Safety Banner & Simulation Indicators */}
-      <div className="bg-success-50 border border-success-200 p-4 rounded-xl shadow-card">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-success-200 pb-2.5 mb-3">
-          <div className="flex items-center gap-2 text-xs font-mono font-bold text-success-700 uppercase">
-            <ShieldCheck className="w-4 h-4 text-success" />
+      <div className="bg-emerald-500/10 border border-emerald-500/30 p-4 rounded-xl shadow-card">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-emerald-500/20 pb-2.5 mb-3">
+          <div className="flex items-center gap-2 text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400 uppercase">
+            <ShieldCheck className="w-4 h-4 text-emerald-500" />
             OFFLINE CONTROLLED ENVIRONMENT — PASSIVE SECURITY GUARANTEES
           </div>
           <div className="flex items-center gap-2 font-mono text-[10px]">
-            <span className="px-2 py-0.5 rounded bg-soc-surface border border-success-200 text-success-700 font-bold">● LIVE SIMULATION</span>
-            <span className="px-2 py-0.5 rounded bg-soc-surface border border-brand-200 text-brand font-bold">PCAP REPLAY</span>
-            <span className="px-2 py-0.5 rounded bg-soc-surface border border-indigoAcc-200 text-indigoAcc font-bold">REAL DATA-DIODE FEED</span>
+            <Badge type="HEALTHY" label="● LIVE SIMULATION" />
+            <Badge type="LOW" label="PCAP REPLAY" />
+            <Badge type="INDIGO" label="REAL DATA-DIODE FEED" />
           </div>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 font-mono text-xs text-soc-textPrimary">
-          <div className="flex items-center gap-2 bg-soc-surface p-2.5 rounded-lg border border-soc-border shadow-subtle font-medium">
-            <CheckCircle2 className="w-4 h-4 text-success shrink-0" />
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 font-mono text-xs text-enterprise-textPrimary dark:text-enterprise-textPrimaryDark">
+          <div className="flex items-center gap-2 bg-enterprise-surface dark:bg-enterprise-surfaceDark p-2.5 rounded-lg border border-enterprise-border dark:border-enterprise-borderDark shadow-subtle font-medium">
+            <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
             <span>NO PACKETS TRANSMITTED</span>
           </div>
-          <div className="flex items-center gap-2 bg-soc-surface p-2.5 rounded-lg border border-soc-border shadow-subtle font-medium">
-            <CheckCircle2 className="w-4 h-4 text-success shrink-0" />
+          <div className="flex items-center gap-2 bg-enterprise-surface dark:bg-enterprise-surfaceDark p-2.5 rounded-lg border border-enterprise-border dark:border-enterprise-borderDark shadow-subtle font-medium">
+            <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
             <span>NO ACTIVE PROBING</span>
           </div>
-          <div className="flex items-center gap-2 bg-soc-surface p-2.5 rounded-lg border border-soc-border shadow-subtle font-medium">
-            <CheckCircle2 className="w-4 h-4 text-success shrink-0" />
+          <div className="flex items-center gap-2 bg-enterprise-surface dark:bg-enterprise-surfaceDark p-2.5 rounded-lg border border-enterprise-border dark:border-enterprise-borderDark shadow-subtle font-medium">
+            <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
             <span>NO PAYLOAD DECRYPTION</span>
           </div>
         </div>
@@ -229,27 +213,27 @@ export default function DemoSimulation() {
 
       {/* Error & Success Alerts */}
       {errorMsg && (
-        <div className="p-4 rounded-lg bg-danger-50 border border-danger-100 text-danger text-xs font-mono flex items-center gap-3">
-          <AlertTriangle className="w-5 h-5 shrink-0 text-danger" />
+        <div className="p-4 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-400 text-xs font-mono flex items-center gap-3">
+          <AlertTriangle className="w-5 h-5 shrink-0 text-rose-500" />
           <span>{errorMsg}</span>
         </div>
       )}
 
       {resetSuccessMsg && (
-        <div className="p-4 rounded-lg bg-success-50 border border-success-200 text-success-700 text-xs font-mono flex items-center gap-3">
-          <CheckCircle2 className="w-5 h-5 shrink-0 text-success" />
+        <div className="p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs font-mono flex items-center gap-3">
+          <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-500" />
           <span>{resetSuccessMsg}</span>
         </div>
       )}
 
       {/* Navigation Tabs */}
-      <div className="flex border-b border-soc-border text-xs font-mono font-bold">
+      <div className="flex border-b border-enterprise-border dark:border-enterprise-borderDark text-xs font-mono font-bold">
         <button
           onClick={() => setActiveTab('scenarios')}
           className={`px-4 py-2.5 border-b-2 transition-all flex items-center gap-2 cursor-pointer ${
             activeTab === 'scenarios'
-              ? 'border-brand text-brand'
-              : 'border-transparent text-soc-textMuted hover:text-soc-textPrimary'
+              ? 'border-enterprise-primary dark:border-enterprise-primaryDark text-enterprise-primary dark:text-enterprise-primaryDark'
+              : 'border-transparent text-enterprise-textMuted dark:text-enterprise-textMutedDark hover:text-enterprise-textPrimary dark:hover:text-enterprise-textPrimaryDark'
           }`}
         >
           <Layers className="w-4 h-4" />
@@ -259,22 +243,22 @@ export default function DemoSimulation() {
           onClick={() => setActiveTab('results')}
           className={`px-4 py-2.5 border-b-2 transition-all flex items-center gap-2 cursor-pointer ${
             activeTab === 'results'
-              ? 'border-brand text-brand'
-              : 'border-transparent text-soc-textMuted hover:text-soc-textPrimary'
+              ? 'border-enterprise-primary dark:border-enterprise-primaryDark text-enterprise-primary dark:text-enterprise-primaryDark'
+              : 'border-transparent text-enterprise-textMuted dark:text-enterprise-textMutedDark hover:text-enterprise-textPrimary dark:hover:text-enterprise-textPrimaryDark'
           }`}
         >
           <Activity className="w-4 h-4" />
-          Execution Results {runResult && <span className="px-2 py-0.2 rounded text-[10px] bg-brand-50 text-brand border border-brand-200">Active</span>}
+          Execution Results {runResult && <span className="ml-1.5"><Badge type="LOW" label="Active" /></span>}
         </button>
         <button
           onClick={() => setActiveTab('live_stream')}
           className={`px-4 py-2.5 border-b-2 transition-all flex items-center gap-2 cursor-pointer ${
             activeTab === 'live_stream'
-              ? 'border-brand text-brand'
-              : 'border-transparent text-soc-textMuted hover:text-soc-textPrimary'
+              ? 'border-enterprise-primary dark:border-enterprise-primaryDark text-enterprise-primary dark:text-enterprise-primaryDark'
+              : 'border-transparent text-enterprise-textMuted dark:text-enterprise-textMutedDark hover:text-enterprise-textPrimary dark:hover:text-enterprise-textPrimaryDark'
           }`}
         >
-          <Radio className="w-4 h-4 text-ai" />
+          <Radio className="w-4 h-4 text-purple-500" />
           Live WebSocket Feed ({liveWsAlerts.length})
         </button>
       </div>
@@ -292,30 +276,30 @@ export default function DemoSimulation() {
                   onClick={() => setSelectedScenario(sc.id)}
                   className={`p-5 rounded-xl border transition-all cursor-pointer relative overflow-hidden flex flex-col justify-between ${
                     isSelected
-                      ? 'bg-brand-50 border-brand shadow-cardHover ring-1 ring-brand/40'
-                      : `bg-soc-surface border-soc-border ${accent.border} hover:bg-soc-surfaceSubtle`
+                      ? 'bg-enterprise-primary/10 dark:bg-enterprise-primaryDark/15 border-enterprise-primary dark:border-enterprise-primaryDark shadow-cardHover ring-1 ring-enterprise-primary/40'
+                      : `bg-enterprise-surface dark:bg-enterprise-surfaceDark border-enterprise-border dark:border-enterprise-borderDark ${accent.border} hover:bg-enterprise-surfaceSubtle dark:hover:bg-enterprise-surfaceSubtleDark`
                   }`}
                 >
                   <div>
                     <div className="flex items-center justify-between gap-2 mb-3">
                       <div className="flex items-center gap-2.5">
-                        <div className="p-2 rounded-lg bg-soc-surfaceSubtle border border-soc-border">
+                        <div className="p-2 rounded-lg bg-enterprise-surfaceSubtle dark:bg-enterprise-surfaceSubtleDark border border-enterprise-border dark:border-enterprise-borderDark">
                           {accent.icon}
                         </div>
                         <div>
-                          <h3 className="font-bold font-mono text-soc-textPrimary text-sm">{sc.title}</h3>
+                          <h3 className="font-bold font-mono text-enterprise-textPrimary dark:text-enterprise-textPrimaryDark text-sm">{sc.title}</h3>
                           <span className={`text-[10px] font-mono uppercase font-bold ${accent.tag}`}>{sc.category}</span>
                         </div>
                       </div>
                       {isSelected && (
-                        <CheckCircle2 className="w-5 h-5 text-brand shrink-0" />
+                        <CheckCircle2 className="w-5 h-5 text-enterprise-primary dark:text-enterprise-primaryDark shrink-0" />
                       )}
                     </div>
-                    <p className="text-xs text-soc-textSecondary leading-relaxed mb-4">{sc.description}</p>
+                    <p className="text-xs text-enterprise-textSecondary dark:text-enterprise-textSecondaryDark leading-relaxed mb-4">{sc.description}</p>
                   </div>
 
-                  <div className="flex items-center justify-between pt-3 border-t border-soc-border mt-2 font-mono">
-                    <span className="text-[10px] text-soc-textMuted">ID: {sc.id}</span>
+                  <div className="flex items-center justify-between pt-3 border-t border-enterprise-border dark:border-enterprise-borderDark mt-2 font-mono">
+                    <span className="text-[10px] text-enterprise-textMuted dark:text-enterprise-textMutedDark">ID: {sc.id}</span>
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -334,16 +318,16 @@ export default function DemoSimulation() {
             })}
           </div>
 
-          <div className="p-4 rounded-xl bg-soc-surface border border-soc-border flex flex-col md:flex-row items-center justify-between gap-4 font-mono shadow-card">
+          <div className="p-4 rounded-xl bg-enterprise-surface dark:bg-enterprise-surfaceDark border border-enterprise-border dark:border-enterprise-borderDark flex flex-col md:flex-row items-center justify-between gap-4 font-mono shadow-card">
             <div className="flex items-center gap-3">
               <input
                 type="checkbox"
                 id="autoReset"
                 checked={autoReset}
                 onChange={(e) => setAutoReset(e.target.checked)}
-                className="w-4 h-4 rounded border-soc-borderHover bg-soc-surface text-brand focus:ring-brand"
+                className="w-4 h-4 rounded border-enterprise-border dark:border-enterprise-borderDark bg-enterprise-surface dark:bg-enterprise-surfaceDark text-enterprise-primary focus:ring-enterprise-primary"
               />
-              <label htmlFor="autoReset" className="text-xs text-soc-textTechnical cursor-pointer font-medium">
+              <label htmlFor="autoReset" className="text-xs text-enterprise-textTechnical dark:text-enterprise-textTechnicalDark cursor-pointer font-medium">
                 Automatically reset alert store & temporal state before running scenario
               </label>
             </div>
@@ -363,55 +347,48 @@ export default function DemoSimulation() {
       {activeTab === 'results' && (
         <div className="space-y-6">
           {!runResult ? (
-            <div className="p-12 text-center bg-soc-surface rounded-xl border border-soc-border space-y-3 font-mono shadow-card">
-              <Activity className="w-10 h-10 text-soc-textMuted mx-auto" />
-              <h3 className="text-soc-textPrimary font-bold text-sm">NO SIMULATION RESULTS YET</h3>
-              <p className="text-soc-textMuted text-xs max-w-md mx-auto">
-                Select a threat scenario from the catalog tab and click 'RUN' to execute telemetry through the detection pipeline.
-              </p>
-              <button
-                onClick={() => setActiveTab('scenarios')}
-                className="btn-primary-gradient text-white px-4 py-2 rounded text-xs font-bold cursor-pointer shadow-subtle transition-colors"
-              >
-                Go to Scenario Catalog
-              </button>
+            <div className="p-8">
+              <EmptyState
+                title="NO SIMULATION RESULTS YET"
+                description="Select a threat scenario from the catalog tab and click 'RUN' to execute telemetry through the detection pipeline."
+                actionLabel="Go to Scenario Catalog"
+                onAction={() => setActiveTab('scenarios')}
+              />
             </div>
           ) : runResult.scenario === 'all' ? (
             <div className="space-y-6">
-              <div className="bg-soc-surface p-6 rounded-xl border border-soc-border shadow-card space-y-4 font-mono">
-                <div className="flex items-center justify-between border-b border-soc-border pb-4">
+              <div className="bg-enterprise-surface dark:bg-enterprise-surfaceDark p-6 rounded-xl border border-enterprise-border dark:border-enterprise-borderDark shadow-card space-y-4 font-mono transition-colors">
+                <div className="flex items-center justify-between border-b border-enterprise-border dark:border-enterprise-borderDark pb-4">
                   <div>
-                    <h2 className="text-lg font-bold text-soc-textPrimary">{runResult.title}</h2>
-                    <p className="text-xs text-soc-textMuted mt-0.5">{runResult.description}</p>
+                    <h2 className="text-lg font-bold text-enterprise-textPrimary dark:text-enterprise-textPrimaryDark">{runResult.title}</h2>
+                    <p className="text-xs text-enterprise-textMuted dark:text-enterprise-textMutedDark mt-0.5">{runResult.description}</p>
                   </div>
-                  <span className="px-3 py-1 rounded text-xs font-bold bg-success-50 text-success-700 border border-success-200">
-                    STATUS: {runResult.status}
-                  </span>
+                  <Badge type="HEALTHY" label={`STATUS: ${runResult.status}`} />
                 </div>
 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-2">
-                  <div className="p-3.5 rounded bg-soc-surfaceSubtle border border-soc-border">
-                    <div className="text-[10px] text-soc-textMuted uppercase font-bold">Total Events</div>
-                    <div className="text-xl font-bold text-soc-textPrimary">{runResult.total_events_processed}</div>
+                  <div className="p-3.5 rounded bg-enterprise-surfaceSubtle dark:bg-enterprise-surfaceSubtleDark border border-enterprise-border dark:border-enterprise-borderDark">
+                    <div className="text-[10px] text-enterprise-textMuted dark:text-enterprise-textMutedDark uppercase font-bold">Total Events</div>
+                    <div className="text-xl font-bold text-enterprise-textPrimary dark:text-enterprise-textPrimaryDark">{runResult.total_events_processed}</div>
                   </div>
-                  <div className="p-3.5 rounded bg-soc-surfaceSubtle border border-soc-border">
-                    <div className="text-[10px] text-soc-textMuted uppercase font-bold">Detections Generated</div>
-                    <div className="text-xl font-bold text-brand">{runResult.total_detections_generated}</div>
+                  <div className="p-3.5 rounded bg-enterprise-surfaceSubtle dark:bg-enterprise-surfaceSubtleDark border border-enterprise-border dark:border-enterprise-borderDark">
+                    <div className="text-[10px] text-enterprise-textMuted dark:text-enterprise-textMutedDark uppercase font-bold">Detections Generated</div>
+                    <div className="text-xl font-bold text-enterprise-primary dark:text-enterprise-primaryDark">{runResult.total_detections_generated}</div>
                   </div>
-                  <div className="p-3.5 rounded bg-soc-surfaceSubtle border border-soc-border">
-                    <div className="text-[10px] text-soc-textMuted uppercase font-bold">Alerts Created</div>
-                    <div className="text-xl font-bold text-warning">{runResult.total_alerts_generated}</div>
+                  <div className="p-3.5 rounded bg-enterprise-surfaceSubtle dark:bg-enterprise-surfaceSubtleDark border border-enterprise-border dark:border-enterprise-borderDark">
+                    <div className="text-[10px] text-enterprise-textMuted dark:text-enterprise-textMutedDark uppercase font-bold">Alerts Created</div>
+                    <div className="text-xl font-bold text-amber-500">{runResult.total_alerts_generated}</div>
                   </div>
-                  <div className="p-3.5 rounded bg-soc-surfaceSubtle border border-soc-border">
-                    <div className="text-[10px] text-soc-textMuted uppercase font-bold">Duration / Rate</div>
-                    <div className="text-xl font-bold text-success">{runResult.duration_sec}s <span className="text-xs text-soc-textMuted">({runResult.rate_events_per_sec} evt/s)</span></div>
+                  <div className="p-3.5 rounded bg-enterprise-surfaceSubtle dark:bg-enterprise-surfaceSubtleDark border border-enterprise-border dark:border-enterprise-borderDark">
+                    <div className="text-[10px] text-enterprise-textMuted dark:text-enterprise-textMutedDark uppercase font-bold">Duration / Rate</div>
+                    <div className="text-xl font-bold text-emerald-500">{runResult.duration_sec}s <span className="text-xs text-enterprise-textMuted dark:text-enterprise-textMutedDark">({runResult.rate_events_per_sec} evt/s)</span></div>
                   </div>
                 </div>
 
-                <h3 className="text-xs font-bold text-soc-textTechnical pt-4 uppercase">Sequential Threat Execution Matrix</h3>
-                <div className="overflow-x-auto rounded-lg border border-soc-border">
-                  <table className="w-full text-left text-xs text-soc-textTechnical">
-                    <thead className="bg-soc-surfaceSubtle text-soc-textMuted font-bold uppercase border-b border-soc-border text-[10px]">
+                <h3 className="text-xs font-bold text-enterprise-textTechnical dark:text-enterprise-textTechnicalDark pt-4 uppercase">Sequential Threat Execution Matrix</h3>
+                <div className="overflow-x-auto rounded-lg border border-enterprise-border dark:border-enterprise-borderDark">
+                  <table className="w-full text-left text-xs text-enterprise-textTechnical dark:text-enterprise-textTechnicalDark">
+                    <thead className="bg-enterprise-surfaceSubtle dark:bg-enterprise-surfaceSubtleDark text-enterprise-textMuted dark:text-enterprise-textMutedDark font-bold uppercase border-b border-enterprise-border dark:border-enterprise-borderDark text-[10px]">
                       <tr>
                         <th className="p-3">Scenario</th>
                         <th className="p-3">Status</th>
@@ -422,25 +399,25 @@ export default function DemoSimulation() {
                         <th className="p-3">Action</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-soc-border">
+                    <tbody className="divide-y divide-enterprise-border dark:divide-enterprise-borderDark">
                       {runResult.scenarios_summary?.map((sc, idx) => (
-                        <tr key={idx} className="hover:bg-soc-surfaceSubtle">
-                          <td className="p-3 font-bold text-soc-textPrimary">{sc.title}</td>
+                        <tr key={idx} className="hover:bg-enterprise-surfaceSubtle dark:hover:bg-enterprise-surfaceSubtleDark">
+                          <td className="p-3 font-bold text-enterprise-textPrimary dark:text-enterprise-textPrimaryDark">{sc.title}</td>
                           <td className="p-3">
-                            <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                              sc.status === 'DETECTED' ? 'bg-success-50 text-success-700 border border-success-200' : 'bg-soc-surfaceSubtle text-soc-textMuted'
-                            }`}>
-                              {sc.status}
-                            </span>
+                            {sc.status === 'DETECTED' ? (
+                              <Badge type="HEALTHY" label={sc.status} />
+                            ) : (
+                              <Badge type="OFFLINE" label={sc.status} />
+                            )}
                           </td>
-                          <td className="p-3 text-soc-textTechnical">{sc.detections_count}</td>
-                          <td className="p-3 font-bold text-warning">{sc.alerts_generated_count}</td>
-                          <td className="p-3">{getSeverityBadge(sc.highest_severity)}</td>
-                          <td className="p-3 font-bold text-brand">{sc.max_risk_score}</td>
+                          <td className="p-3 text-enterprise-textTechnical dark:text-enterprise-textTechnicalDark">{sc.detections_count}</td>
+                          <td className="p-3 font-bold text-amber-500">{sc.alerts_generated_count}</td>
+                          <td className="p-3"><Badge type={sc.highest_severity} /></td>
+                          <td className="p-3 font-bold text-enterprise-primary dark:text-enterprise-primaryDark">{sc.max_risk_score}</td>
                           <td className="p-3">
                             <button
                               onClick={() => navigate('/alerts')}
-                              className="text-brand hover:underline text-xs font-bold flex items-center gap-1 cursor-pointer"
+                              className="text-enterprise-primary dark:text-enterprise-primaryDark hover:underline text-xs font-bold flex items-center gap-1 cursor-pointer"
                             >
                               View Alerts <ArrowRight className="w-3 h-3" />
                             </button>
@@ -455,78 +432,76 @@ export default function DemoSimulation() {
           ) : (
             /* Single Scenario Detailed View */
             <div className="space-y-6 font-mono">
-              <div className="bg-soc-surface p-6 rounded-xl border border-soc-border shadow-card space-y-4">
-                <div className="flex items-center justify-between border-b border-soc-border pb-4">
+              <div className="bg-enterprise-surface dark:bg-enterprise-surfaceDark p-6 rounded-xl border border-enterprise-border dark:border-enterprise-borderDark shadow-card space-y-4 transition-colors">
+                <div className="flex items-center justify-between border-b border-enterprise-border dark:border-enterprise-borderDark pb-4">
                   <div>
-                    <span className="text-xs text-brand font-bold uppercase">{runResult.scenario} SCENARIO</span>
-                    <h2 className="text-xl font-bold text-soc-textPrimary">{runResult.title}</h2>
-                    <p className="text-xs text-soc-textMuted mt-0.5">{runResult.description}</p>
+                    <span className="text-xs text-enterprise-primary dark:text-enterprise-primaryDark font-bold uppercase">{runResult.scenario} SCENARIO</span>
+                    <h2 className="text-xl font-bold text-enterprise-textPrimary dark:text-enterprise-textPrimaryDark">{runResult.title}</h2>
+                    <p className="text-xs text-enterprise-textMuted dark:text-enterprise-textMutedDark mt-0.5">{runResult.description}</p>
                   </div>
                   <div className="flex items-center gap-3">
-                    {getSeverityBadge(runResult.highest_severity)}
-                    <span className="px-3 py-1 rounded text-xs font-bold bg-success-50 text-success-700 border border-success-200">
-                      {runResult.status}
-                    </span>
+                    <Badge type={runResult.highest_severity} />
+                    <Badge type="HEALTHY" label={runResult.status} />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-3 pt-1">
-                  <div className="p-3 rounded bg-soc-surfaceSubtle border border-soc-border">
-                    <div className="text-[10px] text-soc-textMuted uppercase">Events Processed</div>
-                    <div className="text-xl font-bold text-soc-textPrimary">{runResult.events_processed}</div>
+                  <div className="p-3 rounded bg-enterprise-surfaceSubtle dark:bg-enterprise-surfaceSubtleDark border border-enterprise-border dark:border-enterprise-borderDark">
+                    <div className="text-[10px] text-enterprise-textMuted dark:text-enterprise-textMutedDark uppercase">Events Processed</div>
+                    <div className="text-xl font-bold text-enterprise-textPrimary dark:text-enterprise-textPrimaryDark">{runResult.events_processed}</div>
                   </div>
-                  <div className="p-3 rounded bg-soc-surfaceSubtle border border-soc-border">
-                    <div className="text-[10px] text-soc-textMuted uppercase">Detections Generated</div>
-                    <div className="text-xl font-bold text-brand">{runResult.detections_count}</div>
+                  <div className="p-3 rounded bg-enterprise-surfaceSubtle dark:bg-enterprise-surfaceSubtleDark border border-enterprise-border dark:border-enterprise-borderDark">
+                    <div className="text-[10px] text-enterprise-textMuted dark:text-enterprise-textMutedDark uppercase">Detections Generated</div>
+                    <div className="text-xl font-bold text-enterprise-primary dark:text-enterprise-primaryDark">{runResult.detections_count}</div>
                   </div>
-                  <div className="p-3 rounded bg-soc-surfaceSubtle border border-soc-border">
-                    <div className="text-[10px] text-soc-textMuted uppercase">Alerts Created</div>
-                    <div className="text-xl font-bold text-warning">{runResult.alerts_generated_count}</div>
+                  <div className="p-3 rounded bg-enterprise-surfaceSubtle dark:bg-enterprise-surfaceSubtleDark border border-enterprise-border dark:border-enterprise-borderDark">
+                    <div className="text-[10px] text-enterprise-textMuted dark:text-enterprise-textMutedDark uppercase">Alerts Created</div>
+                    <div className="text-xl font-bold text-amber-500">{runResult.alerts_generated_count}</div>
                   </div>
-                  <div className="p-3 rounded bg-soc-surfaceSubtle border border-soc-border">
-                    <div className="text-[10px] text-soc-textMuted uppercase">Alerts Suppressed</div>
-                    <div className="text-xl font-bold text-ai">{runResult.alerts_suppressed_count}</div>
+                  <div className="p-3 rounded bg-enterprise-surfaceSubtle dark:bg-enterprise-surfaceSubtleDark border border-enterprise-border dark:border-enterprise-borderDark">
+                    <div className="text-[10px] text-enterprise-textMuted dark:text-enterprise-textMutedDark uppercase">Alerts Suppressed</div>
+                    <div className="text-xl font-bold text-purple-500">{runResult.alerts_suppressed_count}</div>
                   </div>
-                  <div className="p-3 rounded bg-soc-surfaceSubtle border border-soc-border">
-                    <div className="text-[10px] text-soc-textMuted uppercase">Max Risk Score</div>
-                    <div className="text-xl font-bold text-brand">{runResult.max_risk_score}</div>
+                  <div className="p-3 rounded bg-enterprise-surfaceSubtle dark:bg-enterprise-surfaceSubtleDark border border-enterprise-border dark:border-enterprise-borderDark">
+                    <div className="text-[10px] text-enterprise-textMuted dark:text-enterprise-textMutedDark uppercase">Max Risk Score</div>
+                    <div className="text-xl font-bold text-enterprise-primary dark:text-enterprise-primaryDark">{runResult.max_risk_score}</div>
                   </div>
                 </div>
 
                 {/* Generated Alerts Cards */}
-                <h3 className="text-xs font-bold text-soc-textTechnical pt-4 uppercase">Persisted Telemetry Alerts</h3>
+                <h3 className="text-xs font-bold text-enterprise-textTechnical dark:text-enterprise-textTechnicalDark pt-4 uppercase">Persisted Telemetry Alerts</h3>
                 {runResult.alerts?.length === 0 ? (
-                  <div className="p-4 rounded bg-soc-surfaceSubtle text-xs text-soc-textMuted border border-soc-border">
+                  <div className="p-4 rounded bg-enterprise-surfaceSubtle dark:bg-enterprise-surfaceSubtleDark text-xs text-enterprise-textMuted dark:text-enterprise-textMutedDark border border-enterprise-border dark:border-enterprise-borderDark">
                     No new alerts persisted (detections were suppressed by cooldown deduplication or score threshold).
                   </div>
                 ) : (
                   <div className="space-y-3">
                     {runResult.alerts?.map((alt, idx) => (
-                      <div key={idx} className="p-4 rounded-xl bg-soc-surfaceSubtle border border-soc-border space-y-3">
-                        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-soc-border pb-2">
+                      <div key={idx} className="p-4 rounded-xl bg-enterprise-surfaceSubtle dark:bg-enterprise-surfaceSubtleDark border border-enterprise-border dark:border-enterprise-borderDark space-y-3">
+                        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-enterprise-border dark:border-enterprise-borderDark pb-2">
                           <div className="flex items-center gap-3">
-                            <span className="text-xs font-bold text-brand">{alt.alert_id}</span>
-                            <h4 className="font-bold text-soc-textPrimary text-sm">{alt.threat_class}</h4>
-                            {getSeverityBadge(alt.severity)}
+                            <span className="text-xs font-bold text-enterprise-primary dark:text-enterprise-primaryDark">{alt.alert_id}</span>
+                            <h4 className="font-bold text-enterprise-textPrimary dark:text-enterprise-textPrimaryDark text-sm">{alt.threat_class}</h4>
+                            <Badge type={alt.severity} />
                           </div>
-                          <div className="text-xs text-soc-textMuted">
-                            Risk Score: <span className="font-bold text-brand">{alt.confidence}</span> | Model: <span className="text-soc-textTechnical">{alt.model_version}</span>
+                          <div className="text-xs text-enterprise-textMuted dark:text-enterprise-textMutedDark">
+                            Risk Score: <span className="font-bold text-enterprise-primary dark:text-enterprise-primaryDark">{alt.confidence}</span> | Model: <span className="text-enterprise-textTechnical dark:text-enterprise-textTechnicalDark">{alt.model_version}</span>
                           </div>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs text-soc-textMuted">
-                          <div>Source: <span className="text-soc-textTechnical">{alt.source_ip}:{alt.source_port}</span></div>
-                          <div>Destination: <span className="text-soc-textTechnical">{alt.destination_ip}:{alt.destination_port}</span></div>
-                          <div>Detector Engine: <span className="text-soc-textTechnical">{alt.detector_name}</span></div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs text-enterprise-textMuted dark:text-enterprise-textMutedDark">
+                          <div>Source: <span className="text-enterprise-textTechnical dark:text-enterprise-textTechnicalDark">{alt.source_ip}:{alt.source_port}</span></div>
+                          <div>Destination: <span className="text-enterprise-textTechnical dark:text-enterprise-textTechnicalDark">{alt.destination_ip}:{alt.destination_port}</span></div>
+                          <div>Detector Engine: <span className="text-enterprise-textTechnical dark:text-enterprise-textTechnicalDark">{alt.detector_name}</span></div>
                         </div>
 
                         {alt.evidence && (
-                          <div className="p-3 rounded bg-soc-surface border border-soc-border space-y-2 text-xs shadow-subtle">
-                            <div className="flex items-center justify-between text-soc-textTechnical font-bold border-b border-soc-border pb-1">
+                          <div className="p-3 rounded bg-enterprise-surface dark:bg-enterprise-surfaceDark border border-enterprise-border dark:border-enterprise-borderDark space-y-2 text-xs shadow-subtle">
+                            <div className="flex items-center justify-between text-enterprise-textTechnical dark:text-enterprise-textTechnicalDark font-bold border-b border-enterprise-border dark:border-enterprise-borderDark pb-1">
                               <span>Evidence & Model Inference Findings</span>
-                              <span className="text-soc-textMuted">Statistical: {alt.evidence.statistical_score} | ML: {alt.evidence.ml_score}</span>
+                              <span className="text-enterprise-textMuted dark:text-enterprise-textMutedDark">Statistical: {alt.evidence.statistical_score} | ML: {alt.evidence.ml_score}</span>
                             </div>
-                            <ul className="list-disc list-inside space-y-1 text-soc-textMuted">
+                            <ul className="list-disc list-inside space-y-1 text-enterprise-textMuted dark:text-enterprise-textMutedDark">
                               {alt.evidence.reasons?.map((reason, rIdx) => (
                                 <li key={rIdx}>{reason}</li>
                               ))}
@@ -545,39 +520,41 @@ export default function DemoSimulation() {
 
       {/* TAB 3: LIVE WEBSOCKET FEED */}
       {activeTab === 'live_stream' && (
-        <div className="bg-soc-surface p-6 rounded-xl border border-soc-border shadow-card space-y-4 font-mono">
-          <div className="flex items-center justify-between border-b border-soc-border pb-4">
+        <div className="bg-enterprise-surface dark:bg-enterprise-surfaceDark p-6 rounded-xl border border-enterprise-border dark:border-enterprise-borderDark shadow-card space-y-4 font-mono transition-colors">
+          <div className="flex items-center justify-between border-b border-enterprise-border dark:border-enterprise-borderDark pb-4">
             <div>
-              <h2 className="text-sm font-bold text-soc-textPrimary flex items-center gap-2 uppercase">
-                <Radio className="w-4 h-4 text-ai animate-pulse" />
+              <h2 className="text-sm font-bold text-enterprise-textPrimary dark:text-enterprise-textPrimaryDark flex items-center gap-2 uppercase">
+                <Radio className="w-4 h-4 text-purple-500 animate-pulse" />
                 LIVE WEBSOCKET SECURITY STREAM
               </h2>
-              <p className="text-xs text-soc-textMuted mt-0.5">
+              <p className="text-xs text-enterprise-textMuted dark:text-enterprise-textMutedDark mt-0.5">
                 Real-time alert events broadcast asynchronously during demo runs.
               </p>
             </div>
-            <span className="px-3 py-1 rounded text-xs font-bold bg-ai-50 text-ai border border-ai-200">
-              WebSocket: {wsStatus.toUpperCase()}
-            </span>
+            <Badge type="AI" label={`WebSocket: ${wsStatus.toUpperCase()}`} />
           </div>
 
           {liveWsAlerts.length === 0 ? (
-            <div className="p-8 text-center text-soc-textMuted text-xs bg-soc-surfaceSubtle rounded-lg border border-dashed border-soc-border">
-              Awaiting live WebSocket alert broadcasts. Run a scenario in the catalog tab to see streaming events.
+            <div className="p-8">
+              <EmptyState
+                title="AWAITING WEBSOCKET ALERTS"
+                description="Run a scenario in the catalog tab to see live streaming alert broadcasts."
+                icon={Radio}
+              />
             </div>
           ) : (
             <div className="space-y-2.5">
               {liveWsAlerts.map((alt, idx) => (
-                <div key={idx} className="p-3 rounded-lg bg-soc-surfaceSubtle border border-soc-border flex items-center justify-between text-xs">
+                <div key={idx} className="p-3 rounded-lg bg-enterprise-surfaceSubtle dark:bg-enterprise-surfaceSubtleDark border border-enterprise-border dark:border-enterprise-borderDark flex items-center justify-between text-xs">
                   <div className="flex items-center gap-3">
-                    <span className="text-soc-textMuted">{formatIndianTime(alt.timestamp)}</span>
-                    <span className="font-bold text-brand">{alt.alert_id}</span>
-                    <span className="font-bold text-soc-textPrimary">{alt.threat_class}</span>
-                    {getSeverityBadge(alt.severity)}
+                    <span className="text-enterprise-textMuted dark:text-enterprise-textMutedDark">{formatIndianTime(alt.timestamp)}</span>
+                    <span className="font-bold text-enterprise-primary dark:text-enterprise-primaryDark">{alt.alert_id}</span>
+                    <span className="font-bold text-enterprise-textPrimary dark:text-enterprise-textPrimaryDark">{alt.threat_class}</span>
+                    <Badge type={alt.severity} />
                   </div>
-                  <div className="flex items-center gap-4 text-soc-textMuted">
+                  <div className="flex items-center gap-4 text-enterprise-textMuted dark:text-enterprise-textMutedDark">
                     <span>{alt.source_ip} → {alt.destination_ip}:{alt.destination_port}</span>
-                    <span className="text-brand font-bold">Score: {alt.confidence}</span>
+                    <span className="text-enterprise-primary dark:text-enterprise-primaryDark font-bold">Score: {alt.confidence}</span>
                   </div>
                 </div>
               ))}
