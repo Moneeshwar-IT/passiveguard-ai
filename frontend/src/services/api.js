@@ -1,18 +1,19 @@
 import axios from 'axios';
 
-const DEFAULT_BACKEND_URL = 'https://passiveguard-backend-s7vk.onrender.com';
-
 export const getApiBaseUrl = () => {
   const envUrl = import.meta.env.VITE_API_BASE_URL;
   if (envUrl && typeof envUrl === 'string' && envUrl.trim() !== '') {
     return envUrl.trim().replace(/\/$/, '');
   }
-  return DEFAULT_BACKEND_URL;
+  console.error('[API Configuration Error] VITE_API_BASE_URL environment variable is not defined!');
+  return '';
 };
 
 export const API_BASE_URL = getApiBaseUrl();
+export const IS_API_URL_MISSING = !API_BASE_URL;
 
 export const getWebSocketUrl = (baseUrl = API_BASE_URL) => {
+  if (!baseUrl) return '';
   const cleanUrl = baseUrl.replace(/\/$/, '');
   if (cleanUrl.startsWith('https://')) {
     return cleanUrl.replace(/^https:\/\//, 'wss://') + '/ws';
@@ -27,7 +28,7 @@ export const getWebSocketUrl = (baseUrl = API_BASE_URL) => {
 };
 
 export const apiClient = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: API_BASE_URL || 'http://localhost:8000',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -35,6 +36,9 @@ export const apiClient = axios.create({
 });
 
 export const fetchHealth = async () => {
+  if (IS_API_URL_MISSING) {
+    return { status: 'offline', mode: 'passive_read_only', app_name: 'PassiveGuard AI', error: 'VITE_API_BASE_URL is not set' };
+  }
   try {
     const response = await apiClient.get('/health');
     return response.data;
@@ -44,6 +48,7 @@ export const fetchHealth = async () => {
 };
 
 export const fetchAlerts = async (severity = null, limit = 100) => {
+  if (IS_API_URL_MISSING) return [];
   try {
     const params = { limit };
     if (severity && severity !== 'ALL') params.severity = severity;
@@ -61,6 +66,15 @@ export const fetchAlertById = async (alertId) => {
 };
 
 export const fetchCurrentTraffic = async () => {
+  if (IS_API_URL_MISSING) {
+    return {
+      active_flows: 0,
+      total_packets_sec: 0.0,
+      total_bytes_sec: 0.0,
+      bandwidth_mbps: 0.0,
+      protocol_distribution: { TCP: 0, UDP: 0, ICMP: 0, OTHER: 0 }
+    };
+  }
   try {
     const response = await apiClient.get('/api/traffic/current');
     return response.data;
@@ -76,6 +90,7 @@ export const fetchCurrentTraffic = async () => {
 };
 
 export const fetchHistoricalTraffic = async () => {
+  if (IS_API_URL_MISSING) return [];
   try {
     const response = await apiClient.get('/api/traffic/historical');
     return response.data;
@@ -85,6 +100,7 @@ export const fetchHistoricalTraffic = async () => {
 };
 
 export const fetchModels = async () => {
+  if (IS_API_URL_MISSING) return [];
   try {
     const response = await apiClient.get('/api/models');
     return response.data;
@@ -94,6 +110,7 @@ export const fetchModels = async () => {
 };
 
 export const fetchDemoScenarios = async () => {
+  if (IS_API_URL_MISSING) return { scenarios: [], passive_safety_notice: {} };
   try {
     const response = await apiClient.get('/api/demo/scenarios');
     return response.data;
@@ -103,6 +120,7 @@ export const fetchDemoScenarios = async () => {
 };
 
 export const fetchDemoStatus = async () => {
+  if (IS_API_URL_MISSING) return { is_running: false, current_scenario: null, last_run: null };
   try {
     const response = await apiClient.get('/api/demo/status');
     return response.data;
@@ -172,6 +190,11 @@ export const formatIndianDateTime = (timestamp = new Date()) => {
 
 export const createWebSocketConnection = (onMessage, onStatusChange) => {
   const wsUrl = getWebSocketUrl(API_BASE_URL);
+  if (!wsUrl) {
+    if (onStatusChange) onStatusChange('offline');
+    return { close: () => {} };
+  }
+
   let ws = null;
   let isClosed = false;
 
